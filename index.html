@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GestiónDoc — Portal de Informes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0F1B2D;
+    --navy-2: #1E2D3D;
+    --navy-3: #253345;
+    --teal: #00C9B1;
+    --teal-dim: #00a896;
+    --teal-bg: rgba(0,201,177,0.08);
+    --teal-border: rgba(0,201,177,0.25);
+    --white: #F0F4F8;
+    --white-2: #E2E8F0;
+    --muted: #8CA0B3;
+    --muted-2: #607080;
+    --text: #D8E6F0;
+    --success: #34D399;
+    --success-bg: rgba(52,211,153,0.1);
+    --warning: #FBBF24;
+    --warning-bg: rgba(251,191,36,0.1);
+    --danger: #F87171;
+    --danger-bg: rgba(248,113,113,0.1);
+    --info: #60A5FA;
+    --info-bg: rgba(96,165,250,0.1);
+    --border: rgba(140,160,179,0.15);
+    --border-hover: rgba(0,201,177,0.3);
+    --radius: 8px;
+    --radius-lg: 14px;
+    --font: 'Inter', system-ui, sans-serif;
+    --font-display: 'DM Sans', system-ui, sans-serif;
+  }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy-2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-bg);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px var(--teal-bg); }
+    50% { box-shadow: 0 0 0 6px transparent; }
+  }
+
+  nav {
+    display: flex;
+    gap: 0;
+    flex: 1;
+    height: 100%;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 18px;
+    height: 100%;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--white); }
+
+  .tab.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  .tab svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+  }
+
+  .badge-count {
+    background: var(--teal);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 99px;
+    padding: 1px 6px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--navy-3);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--teal);
+    cursor: pointer;
+  }
+
+  /* ── LAYOUT ── */
+  main { flex: 1; display: flex; flex-direction: column; }
+
+  .panel { display: none; padding: 2rem; flex: 1; flex-direction: column; gap: 1.5rem; }
+  .panel.active { display: flex; }
+
+  /* ── PANEL 1: INFORMES ── */
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.3px;
+  }
+
+  .panel-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--teal);
+    color: var(--navy);
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn-primary:hover { background: var(--teal-dim); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary svg { width: 15px; height: 15px; }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: var(--border-hover); }
+  .btn-ghost svg { width: 14px; height: 14px; }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(255,255,255,0.015);
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--teal);
+    background: var(--teal-bg);
+  }
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .upload-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--teal-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+  .upload-icon svg { width: 24px; height: 24px; stroke: var(--teal); }
+  .upload-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .upload-sub { font-size: 13px; color: var(--muted); }
+  .upload-types {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .type-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    stroke: var(--muted);
+    pointer-events: none;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px 8px 34px;
+    color: var(--white);
+    font-size: 13.5px;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--teal); }
+  .search-wrap input::placeholder { color: var(--muted-2); }
+
+  select.filter-select {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-family: var(--font);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    padding-right: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238CA0B3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    transition: border-color 0.15s;
+  }
+  select.filter-select:focus { border-color: var(--teal); }
+
+  /* TABLE */
+  .table-card {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    background: rgba(0,0,0,0.15);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+    cursor: default;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+  td {
+    padding: 13px 16px;
+    font-size: 13.5px;
+    vertical-align: middle;
+  }
+
+  .file-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .file-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+  .file-icon.pdf { background: rgba(248,113,113,0.15); color: var(--danger); }
+  .file-icon.xlsx { background: rgba(52,211,153,0.15); color: var(--success); }
+  .file-icon.docx { background: rgba(96,165,250,0.15); color: var(--info); }
+  .file-icon.pptx { background: rgba(251,191,36,0.15); color: var(--warning); }
+
+  .file-name { font-weight: 500; color: var(--white); font-size: 13.5px; }
+  .file-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 99px;
+  }
+  .status-pill::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .status-pill.revisión { background: var(--warning-bg); color: var(--warning); }
+  .status-pill.revisión::before { background: var(--warning); }
+  .status-pill.aprobado { background: var(--success-bg); color: var(--success); }
+  .status-pill.aprobado::before { background: var(--success); }
+  .status-pill.pendiente { background: var(--info-bg); color: var(--info); }
+  .status-pill.pendiente::before { background: var(--info); }
+  .status-pill.rechazado { background: var(--danger-bg); color: var(--danger); }
+  .status-pill.rechazado::before { background: var(--danger); }
+
+  .td-muted { color: var(--muted); }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.12s, background 0.12s;
+  }
+  .action-btn:hover { color: var(--teal); background: var(--teal-bg); }
+  .action-btn svg { width: 15px; height: 15px; }
+
+  .actions-cell { display: flex; gap: 4px; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.2rem;
+    transition: border-color 0.15s;
+  }
+  .stat-card:hover { border-color: var(--border-hover); }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-value.teal { color: var(--teal); }
+  .stat-value.success { color: var(--success); }
+  .stat-value.warning { color: var(--warning); }
+  .stat-value.danger { color: var(--danger); }
+  .stat-trend {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  /* ── PANEL 2: SEGUIMIENTO ── */
+  .timeline-wrap {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .timeline-wrap { grid-template-columns: 1fr; }
+  }
+
+  .kanban-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .kanban-col {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .kanban-header {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .kanban-col-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  .kanban-count {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 99px;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .kanban-items { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+  .kanban-card {
+    background: var(--navy-3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: default;
+    transition: border-color 0.12s;
+  }
+  .kanban-card:hover { border-color: var(--border-hover); }
+  .kanban-card-title { font-size: 13px; font-weight: 500; color: var(--white); line-height: 1.4; }
+  .kanban-card-meta { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
+
+  .activity-panel {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .activity-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .activity-header svg { width: 15px; height: 15px; stroke: var(--teal); }
+  .activity-list { padding: 6px 0; max-height: 500px; overflow-y: auto; }
+
+  .activity-item {
+    padding: 10px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-item:hover { background: rgba(255,255,255,0.02); }
+
+  .activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .activity-content { flex: 1; }
+  .activity-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .activity-text strong { color: var(--white); font-weight: 500; }
+  .activity-time { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+  /* ── PANEL 3: NORMATIVA ── */
+  .normativa-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .norma-card {
+    background: var(--navy-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.15s;
+    cursor: default;
+  }
+  .norma-card:hover { border-color: var(--teal-border); }
+
+  .norma-top { display: flex; align-items: flex-start; gap: 12px; }
+
+  .norma-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--teal-bg);
+    border: 1px solid var(--teal-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .norma-icon svg { width: 20px; height: 20px; stroke: var(--teal); }
+
+  .norma-info { flex: 1; }
+  .norma-code {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .norma-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.35;
+  }
+  .norma-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  .norma-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    gap: 8px;
+  }
+  .norma-date { font-size: 12px; color: var(--muted-2); }
+
+  .norma-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+  .norma-tag.vigente { background: var(--success-bg); color: var(--success); }
+  .norma-tag.referencia { background: var(--info-bg); color: var(--info); }
+  .norma-tag.interna { background: var(--teal-bg); color: var(--teal); }
+
+  .norma-actions { display: flex; gap: 6px; }
+
+  /* Section title */
+  .section-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--muted);
+  }
+  .empty svg { width: 40px; height: 40px; margin: 0 auto 1rem; stroke: var(--muted-2); display: block; }
+  .empty p { font-size: 14px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--muted-2); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-dot"></span>
+    GestiónDoc
+  </div>
+  <nav>
+    <div class="tab active" onclick="switchTab('informes', this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Informes
+    </div>
+    <div class="tab" onclick="switchTab('seguimiento', this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Seguimiento
+      <span class="badge-count">3</span>
+    </div>
+    <div class="tab" onclick="switchTab('normativa', this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Normativa y respaldos
+    </div>
+  </nav>
+  <div class="header-right">
+    <button class="btn-ghost" style="padding:6px 12px; font-size:12.5px;">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:13px;height:13px;"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      Alertas
+    </button>
+    <div class="avatar" title="Perfil">MC</div>
+  </div>
+</header>
+
+<main>
+  <!-- ══ PANEL 1: INFORMES ══ -->
+  <section class="panel active" id="panel-informes">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Informes</div>
+        <div class="panel-subtitle">Carga y visualiza documentos institucionales</div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-ghost">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Vista lista
+        </button>
+        <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Cargar informe
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total informes</div>
+        <div class="stat-value teal">24</div>
+        <div class="stat-trend">↑ 4 este mes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Aprobados</div>
+        <div class="stat-value success">16</div>
+        <div class="stat-trend">67% del total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">En revisión</div>
+        <div class="stat-value warning">5</div>
+        <div class="stat-trend">Requieren acción</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Rechazados</div>
+        <div class="stat-value danger">3</div>
+        <div class="stat-trend">Con observaciones</div>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.pptx" onchange="handleFiles(this.files)" />
+      <div class="upload-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div class="upload-title">Arrastra tus archivos aquí</div>
+      <div class="upload-sub">o haz clic para seleccionar desde tu equipo</div>
+      <div class="upload-types">
+        <span class="type-pill">PDF</span>
+        <span class="type-pill">DOCX</span>
+        <span class="type-pill">XLSX</span>
+        <span class="type-pill">PPTX</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Buscar informe..." id="searchInput" oninput="filterTable()" />
+        </div>
+        <select class="filter-select" id="statusFilter" onchange="filterTable()">
+          <option value="">Todos los estados</option>
+          <option value="Aprobado">Aprobado</option>
+          <option value="En revisión">En revisión</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Rechazado">Rechazado</option>
+        </select>
+        <select class="filter-select" id="typeFilter" onchange="filterTable()">
+          <option value="">Todos los tipos</option>
+          <option value="PDF">PDF</option>
+          <option value="DOCX">DOCX</option>
+          <option value="XLSX">XLSX</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Responsable</th>
+            <th>Cargado</th>
+            <th>Tamaño</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="reportTable">
+          <tr>
+            <td><div class="file-cell"><div class="file-icon pdf">PDF</div><div><div class="file-name">Informe anual 2024</div><div class="file-meta">Gerencia General</div></div></div></td>
+            <td class="td-muted">PDF</td>
+            <td><span class="status-pill aprobado">Aprobado</span></td>
+            <td class="td-muted">M. Castro</td>
+            <td class="td-muted">12 jun 2025</td>
+            <td class="td-muted">4.2 MB</td>
+            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
+          </tr>
+          <tr>
+            <td><div class="file-cell"><div class="file-icon xlsx">XLSX</div><div><div class="file-name">Cierre financiero Q2</div><div class="file-meta">Finanzas</div></div></div></td>
+            <td class="td-muted">XLSX</td>
+            <td><span class="status-pill revisión">En revisión</span></td>
+            <td class="td-muted">F. Rojas</td>
+            <td class="td-muted">18 jun 2025</td>
+            <td class="td-muted">1.8 MB</td>
+            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
+          </tr>
+          <tr>
+            <td><div class="file-cell"><div class="file-icon docx">DOCX</div><div><div class="file-name">Auditoría interna operaciones</div><div class="file-meta">Auditoría</div></div></div></td>
+            <td class="td-muted">DOCX</td>
+            <td><span class="status-pill pendiente">Pendiente</span></td>
+            <td class="td-muted">L. Mendoza</td>
+            <td class="td-muted">20 jun 2025</td>
+            <td class="td-muted">890 KB</td>
+            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
+          </tr>
+          <tr>
+            <td><div class="file-cell"><div class="file-icon pdf">PDF</div><div><div class="file-name">Reporte de cumplimiento normativo</div><div class="file-meta">Compliance</div></div></div></td>
+            <td class="td-muted">PDF</td>
+            <td><span class="status-pill aprobado">Aprobado</span></td>
+            <td class="td-muted">P. Vidal</td>
+            <td class="td-muted">22 jun 2025</td>
+            <td class="td-muted">3.1 MB</td>
+            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
+          </tr>
+          <tr>
+            <td><div class="file-cell"><div class="file-icon xlsx">XLSX</div><div><div class="file-name">Presupuesto H2 2025</div><div class="file-meta">Finanzas</div></div></div></td>
+            <td class="td-muted">XLSX</td>
+            <td><span class="status-pill rechazado">Rechazado</span></td>
+            <td class="td-muted">F. Rojas</td>
+            <td class="td-muted">24 jun 2025</td>
+            <td class="td-muted">2.4 MB</td>
+            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ PANEL 2: SEGUIMIENTO ══ -->
+  <section class="panel" id="panel-seguimiento">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Seguimiento de informes</div>
+        <div class="panel-subtitle">Estado y trazabilidad de cada documento</div>
+      </div>
+      <button class="btn-ghost">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M3 4a1 1 0 011-1h16a1 1 0 010 2H4a1 1 0 01-1-1zm3 4a1 1 0 011-1h10a1 1 0 010 2H7a1 1 0 01-1-1zm4 4a1 1 0 011-1h2a1 1 0 010 2h-2a1 1 0 01-1-1z"/></svg>
+        Filtrar
+      </button>
+    </div>
+
+    <div class="kanban-cols">
+      <div class="kanban-col">
+        <div class="kanban-header">
+          <span class="kanban-col-title" style="color:var(--info);">Pendiente</span>
+          <span class="kanban-count" style="background:var(--info-bg);color:var(--info);">2</span>
+        </div>
+        <div class="kanban-items">
+          <div class="kanban-card">
+            <div class="kanban-card-title">Auditoría interna operaciones</div>
+            <div class="kanban-card-meta">L. Mendoza · Vence 30 jun</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Informe de riesgos Q3</div>
+            <div class="kanban-card-meta">G. Torres · Vence 5 jul</div>
+          </div>
+        </div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-header">
+          <span class="kanban-col-title" style="color:var(--warning);">En revisión</span>
+          <span class="kanban-count" style="background:var(--warning-bg);color:var(--warning);">3</span>
+        </div>
+        <div class="kanban-items">
+          <div class="kanban-card">
+            <div class="kanban-card-title">Cierre financiero Q2</div>
+            <div class="kanban-card-meta">F. Rojas · Revisado por J. Silva</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Evaluación de proveedores</div>
+            <div class="kanban-card-meta">A. Muñoz · 2 observaciones</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Plan de continuidad TI</div>
+            <div class="kanban-card-meta">C. Paredes · Revisado</div>
+          </div>
+        </div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-header">
+          <span class="kanban-col-title" style="color:var(--success);">Aprobado</span>
+          <span class="kanban-count" style="background:var(--success-bg);color:var(--success);">4</span>
+        </div>
+        <div class="kanban-items">
+          <div class="kanban-card">
+            <div class="kanban-card-title">Informe anual 2024</div>
+            <div class="kanban-card-meta">M. Castro · Aprobado 12 jun</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Reporte cumplimiento normativo</div>
+            <div class="kanban-card-meta">P. Vidal · Aprobado 22 jun</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Balance social 2024</div>
+            <div class="kanban-card-meta">R. Núñez · Aprobado 8 jun</div>
+          </div>
+          <div class="kanban-card">
+            <div class="kanban-card-title">Informe de sostenibilidad</div>
+            <div class="kanban-card-meta">K. Reyes · Aprobado 1 jun</div>
+          </div>
+        </div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-header">
+          <span class="kanban-col-title" style="color:var(--danger);">Rechazado</span>
+          <span class="kanban-count" style="background:var(--danger-bg);color:var(--danger);">1</span>
+        </div>
+        <div class="kanban-items">
+          <div class="kanban-card">
+            <div class="kanban-card-title">Presupuesto H2 2025</div>
+            <div class="kanban-card-meta">F. Rojas · Observaciones pendientes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-panel">
+      <div class="activity-header">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Actividad reciente
+      </div>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--danger);"></div>
+          <div class="activity-content">
+            <div class="activity-text"><strong>Presupuesto H2 2025</strong> fue rechazado con 2 observaciones.</div>
+            <div class="activity-time">Hace 2 horas · J. Silva (Revisor)</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--success);"></div>
+          <div class="activity-content">
+            <div class="activity-text"><strong>Reporte de cumplimiento normativo</strong> fue aprobado.</div>
+            <div class="activity-time">Ayer 14:32 · Dirección General</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--warning);"></div>
+          <div class="activity-content">
+            <div class="activity-text"><strong>Cierre financiero Q2</strong> ingresó a revisión por F. Rojas.</div>
+            <div class="activity-time">18 jun · 09:15</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--info);"></div>
+          <div class="activity-content">
+            <div class="activity-text"><strong>Auditoría interna operaciones</strong> fue cargado por L. Mendoza.</div>
+            <div class="activity-time">20 jun · 11:40</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--success);"></div>
+          <div class="activity-content">
+            <div class="activity-text"><strong>Informe anual 2024</strong> fue aprobado con firma electrónica.</div>
+            <div class="activity-time">12 jun · 16:05</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--teal);"></div>
+          <div class="activity-content">
+            <div class="activity-text"><strong>Plan de continuidad TI</strong> asignado a C. Paredes para revisión.</div>
+            <div class="activity-time">10 jun · 08:20</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PANEL 3: NORMATIVA ══ -->
+  <section class="panel" id="panel-normativa">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Normativa y respaldos</div>
+        <div class="panel-subtitle">Marco regulatorio, resoluciones y documentos de respaldo vigentes</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-ghost">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:14px;height:14px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Buscar
+        </button>
+        <button class="btn-primary">
+          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Agregar documento
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Normativa vigente</div>
+      <div class="normativa-grid">
+        <div class="norma-card">
+          <div class="norma-top">
+            <div class="norma-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="norma-info">
+              <div class="norma-code">Ley 19.880</div>
+              <div class="norma-title">Bases de procedimientos administrativos</div>
+            </div>
+          </div>
+          <div class="norma-desc">Establece y regula las bases del procedimiento administrativo de los actos de la Administración del Estado.</div>
+          <div class="norma-footer">
+            <span class="norma-date">Vigente desde 2003</span>
+            <span class="norma-tag vigente">Vigente</span>
+            <div class="norma-actions">
+              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="norma-card">
+          <div class="norma-top">
+            <div class="norma-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="norma-info">
+              <div class="norma-code">Res. Ex. 1.600</div>
+              <div class="norma-title">Normas de visación de resoluciones y contratos</div>
+            </div>
+          </div>
+          <div class="norma-desc">Fija normas que reemplazan las instrucciones sobre materias de personal, contabilidad, contratos y servicios.</div>
+          <div class="norma-footer">
+            <span class="norma-date">Actualizada 2008</span>
+            <span class="norma-tag vigente">Vigente</span>
+            <div class="norma-actions">
+              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="norma-card">
+          <div class="norma-top">
+            <div class="norma-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div class="norma-info">
+              <div class="norma-code">NCh-ISO 9001:2015</div>
+              <div class="norma-title">Sistema de gestión de calidad</div>
+            </div>
+          </div>
+          <div class="norma-desc">Norma que especifica requisitos para sistemas de gestión de calidad aplicables a cualquier organización.</div>
+          <div class="norma-footer">
+            <span class="norma-date">Versión 2015</span>
+            <span class="norma-tag referencia">Referencia</span>
+            <div class="norma-actions">
+              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Documentos internos y respaldos</div>
+      <div class="normativa-grid">
+        <div class="norma-card">
+          <div class="norma-top">
+            <div class="norma-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div class="norma-info">
+              <div class="norma-code">POL-001</div>
+              <div class="norma-title">Política de gestión documental</div>
+            </div>
+          </div>
+          <div class="norma-desc">Define los criterios institucionales para la creación, clasificación, almacenamiento y eliminación de documentos.</div>
+          <div class="norma-footer">
+            <span class="norma-date">Rev. ene 2025</span>
+            <span class="norma-tag interna">Interna</span>
+            <div class="norma-actions">
+              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="norma-card">
+          <div class="norma-top">
+            <div class="norma-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="norma-info">
+              <div class="norma-code">MAN-003</div>
+              <div class="norma-title">Manual de control de informes y reportes</div>
+            </div>
+          </div>
+          <div class="norma-desc">Procedimientos de validación, firma y distribución de informes institucionales hacia entes reguladores.</div>
+          <div class="norma-footer">
+            <span class="norma-date">Rev. mar 2025</span>
+            <span class="norma-tag interna">Interna</span>
+            <div class="norma-actions">
+              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="norma-card">
+          <div class="norma-top">
+            <div class="norma-icon">
+              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            </div>
+            <div class="norma-info">
+              <div class="norma-code">RES-EX-421</div>
+              <div class="norma-title">Resolución de aprobación sistema de gestión</div>
+            </div>
+          </div>
+          <div class="norma-desc">Resolución exenta que aprueba e implementa el presente sistema de gestión documental institucional.</div>
+          <div class="norma-footer">
+            <span class="norma-date">Dic 2024</span>
+            <span class="norma-tag vigente">Vigente</span>
+            <div class="norma-actions">
+              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  function switchTab(panelId, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + panelId).classList.add('active');
+  }
+
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  function handleFiles(files) {
+    const tbody = document.getElementById('reportTable');
+    const extColors = { pdf: 'pdf', xlsx: 'xlsx', docx: 'docx', pptx: 'pptx' };
+    Array.from(files).forEach(file => {
+      const ext = file.name.split('.').pop().toLowerCase();
+      const size = file.size < 1024*1024
+        ? Math.round(file.size/1024) + ' KB'
+        : (file.size/(1024*1024)).toFixed(1) + ' MB';
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><div class="file-cell"><div class="file-icon ${extColors[ext]||'pdf'}">${ext.toUpperCase()}</div><div><div class="file-name">${file.name}</div><div class="file-meta">Sin asignar</div></div></div></td>
+        <td class="td-muted">${ext.toUpperCase()}</td>
+        <td><span class="status-pill pendiente">Pendiente</span></td>
+        <td class="td-muted">—</td>
+        <td class="td-muted">Hoy</td>
+        <td class="td-muted">${size}</td>
+        <td><div class="actions-cell"><button class="action-btn"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+      `;
+      tbody.prepend(row);
+    });
+  }
+
+  function filterTable() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const status = document.getElementById('statusFilter').value.toLowerCase();
+    const type = document.getElementById('typeFilter').value.toLowerCase();
+    document.querySelectorAll('#reportTable tr').forEach(row => {
+      const name = row.cells[0]?.innerText.toLowerCase() || '';
+      const rowType = row.cells[1]?.innerText.toLowerCase() || '';
+      const rowStatus = row.cells[2]?.innerText.toLowerCase() || '';
+      const matchQ = !q || name.includes(q);
+      const matchS = !status || rowStatus.includes(status);
+      const matchT = !type || rowType.includes(type);
+      row.style.display = (matchQ && matchS && matchT) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>
