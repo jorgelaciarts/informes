@@ -1,1212 +1,924 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>GestiónDoc — Portal de Informes</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Informes · Unidad de Contabilidad Electoral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --ink:#152238;
+  --ink-soft:#2c3a54;
+  --paper:#E7EAEF;
+  --paper-card:#FDFDFC;
+  --folder:#DCD9CC;
+  --folder-dark:#C9C4AE;
+  --brass:#9C7A3F;
+  --brass-dark:#7C5F2E;
+  --line:#C7CBD4;
+  --line-soft:#DADDE3;
+  --green:#3F6C51;
+  --green-bg:#E4EEE6;
+  --red:#9B3B2C;
+  --red-bg:#F3E4E0;
+  --amber:#8A6A1E;
+  --amber-bg:#F1E9D2;
+  --muted:#6A7180;
+  --shadow: 0 1px 2px rgba(21,34,56,.06), 0 6px 18px rgba(21,34,56,.07);
+  --radius: 3px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 500px at 90% -10%, #eef0f4 0%, transparent 60%),
+    var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', system-ui, sans-serif;
+  min-height:100vh;
+}
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 80px;}
 
-  :root {
-    --navy: #0F1B2D;
-    --navy-2: #1E2D3D;
-    --navy-3: #253345;
-    --teal: #00C9B1;
-    --teal-dim: #00a896;
-    --teal-bg: rgba(0,201,177,0.08);
-    --teal-border: rgba(0,201,177,0.25);
-    --white: #F0F4F8;
-    --white-2: #E2E8F0;
-    --muted: #8CA0B3;
-    --muted-2: #607080;
-    --text: #D8E6F0;
-    --success: #34D399;
-    --success-bg: rgba(52,211,153,0.1);
-    --warning: #FBBF24;
-    --warning-bg: rgba(251,191,36,0.1);
-    --danger: #F87171;
-    --danger-bg: rgba(248,113,113,0.1);
-    --info: #60A5FA;
-    --info-bg: rgba(96,165,250,0.1);
-    --border: rgba(140,160,179,0.15);
-    --border-hover: rgba(0,201,177,0.3);
-    --radius: 8px;
-    --radius-lg: 14px;
-    --font: 'Inter', system-ui, sans-serif;
-    --font-display: 'DM Sans', system-ui, sans-serif;
-  }
+/* ---------- Header ---------- */
+.header{
+  display:flex;align-items:center;gap:18px;
+  padding:22px 26px;
+  background:var(--ink);
+  color:#EDEFF3;
+  border-radius:6px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.header::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg, transparent 40%, rgba(156,122,63,.18) 55%, transparent 70%);
+  pointer-events:none;
+}
+.seal{
+  width:52px;height:52px;border-radius:50%;
+  border:2px solid var(--brass);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Source Serif 4', serif;font-weight:700;font-size:14.5px;letter-spacing:.02em;
+  color:var(--brass);flex:none;position:relative;
+}
+.seal::before{content:"";position:absolute;inset:4px;border:1px solid rgba(156,122,63,.5);border-radius:50%;}
+.header h1{
+  font-family:'Source Serif 4', serif;font-weight:700;
+  font-size:26px;margin:0;letter-spacing:.2px;
+}
+.header p{margin:2px 0 0;color:#AEB6C6;font-size:13.5px;}
+.header .exp-count{
+  margin-left:auto;text-align:right;font-family:'IBM Plex Mono',monospace;
+  color:#AEB6C6;font-size:12px;line-height:1.5;
+}
+.header .exp-count b{color:#EDEFF3;font-size:20px;display:block;font-family:'Source Serif 4',serif;}
+.userbar{
+  display:flex;align-items:center;gap:10px;margin-left:22px;padding-left:22px;
+  border-left:1px solid rgba(174,182,198,.35);
+}
+.userbar span{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#D6DAE2;white-space:nowrap;}
+.userbar .btn.secondary{
+  background:transparent;color:#EDEFF3;border-color:rgba(174,182,198,.5);padding:6px 10px;font-size:12px;
+}
+.userbar .btn.secondary:hover{background:rgba(255,255,255,.08);}
 
-  body {
-    background: var(--navy);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+/* ---------- Dashboard ---------- */
+.dashboard{
+  margin-top:14px;padding:18px 22px;background:var(--paper-card);
+  border:1px solid var(--line-soft);border-radius:var(--radius);box-shadow:var(--shadow);
+}
+.dashboard-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+.dashboard-head h2{font-family:'Source Serif 4',serif;font-size:15.5px;font-weight:700;color:var(--ink);margin:0;}
+.dashboard-head span{font-size:11.5px;color:var(--muted);}
+.dashboard-body{display:flex;align-items:center;gap:32px;flex-wrap:wrap;}
+.dash-chart{position:relative;width:160px;height:160px;flex:none;}
+.dash-chart svg{width:160px;height:160px;display:block;}
+.dash-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.dash-center .num{font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;}
+.dash-center .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:3px;}
+.dash-legend{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:6px 18px;flex:1;min-width:280px;}
+.dash-item{display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 9px;border-radius:3px;transition:background .12s ease;}
+.dash-item:hover{background:#F2F3F5;}
+.dash-item.dimmed{opacity:.4;}
+.dash-dot{width:11px;height:11px;border-radius:50%;flex:none;}
+.dash-item .txt{display:flex;flex-direction:column;line-height:1.3;}
+.dash-item .name{font-size:12.5px;font-weight:600;color:var(--ink);}
+.dash-item .cnt{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
 
-  /* ── HEADER ── */
-  header {
-    background: var(--navy-2);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    height: 56px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+/* ---------- Links de apoyo ---------- */
+.links-apoyo{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  margin-top:14px;padding:12px 18px;background:var(--paper-card);
+  border:1px solid var(--line-soft);border-radius:var(--radius);box-shadow:var(--shadow);
+}
+.links-apoyo-title{
+  font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;
+  padding-right:4px;border-right:1px solid var(--line-soft);margin-right:2px;
+}
+.link-chip{
+  display:flex;flex-direction:column;gap:1px;text-decoration:none;
+  padding:6px 12px;border:1px solid var(--line);border-radius:2px;
+  transition:background .12s ease, border-color .12s ease;
+}
+.link-chip:hover{background:#F2F3F5;border-color:var(--brass);}
+.link-chip .link-name{font-size:12.5px;font-weight:600;color:var(--ink);}
+.link-chip .link-url{font-size:10.5px;color:var(--brass-dark);font-family:'IBM Plex Mono',monospace;}
 
-  .logo {
-    font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: -0.3px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-  }
+/* ---------- Toolbar ---------- */
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  margin-top:22px;padding:12px 14px;background:var(--paper-card);
+  border:1px solid var(--line-soft);border-radius:var(--radius);box-shadow:var(--shadow);
+}
+.toolbar input[type=text], .toolbar select{
+  font-family:'IBM Plex Sans';font-size:13.5px;
+  padding:8px 10px;border:1px solid var(--line);border-radius:2px;background:#fff;color:var(--ink);
+}
+.toolbar input[type=text]{min-width:220px;flex:1;}
+.spacer{flex:1;}
+.btn{
+  font-family:'IBM Plex Sans';font-weight:600;font-size:13px;
+  padding:9px 14px;border-radius:2px;border:1px solid var(--ink);
+  background:var(--ink);color:#fff;cursor:pointer;letter-spacing:.01em;
+  transition:transform .08s ease, background .15s ease;
+}
+.btn:hover{background:var(--ink-soft);}
+.btn:active{transform:scale(.97);}
+.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);}
+.btn.secondary:hover{background:#F2F3F5;}
+.btn.brass{background:var(--brass);border-color:var(--brass-dark);}
+.btn.brass:hover{background:var(--brass-dark);}
+.view-toggle{display:flex;border:1px solid var(--line);border-radius:2px;overflow:hidden;}
+.view-toggle button{
+  border:none;background:#fff;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);
+  font-family:'IBM Plex Sans';
+}
+.view-toggle button.active{background:var(--ink);color:#fff;}
 
-  .logo-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--teal);
-    box-shadow: 0 0 0 3px var(--teal-bg);
-    animation: pulse 2s ease-in-out infinite;
-  }
+/* ---------- Kanban ---------- */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px;}
+.col{background:rgba(255,255,255,.4);border-radius:6px;min-height:200px;}
+.col-head{
+  clip-path: polygon(0 0, 92% 0, 100% 100%, 0% 100%);
+  background:var(--folder-dark);
+  padding:10px 26px 10px 16px;
+  font-family:'Source Serif 4', serif;font-weight:700;font-size:14.5px;color:var(--ink);
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin-bottom:-1px;
+}
+.col-head span.count{font-family:'IBM Plex Mono';font-weight:500;font-size:12px;color:var(--ink-soft);}
+.col[data-estado="Asignado"] .col-head{background:#DCD3C4;}
+.col[data-estado="En Proceso"] .col-head{background:#D8C9A3;}
+.col[data-estado="Revision Jefatura"] .col-head{background:#C9B7D6;}
+.col[data-estado="Terminado"] .col-head{background:#C3D2C7;}
+.col-body{
+  background:var(--folder);border:1px solid var(--folder-dark);border-top:none;
+  border-radius:0 0 6px 6px;padding:10px;min-height:160px;
+  display:flex;flex-direction:column;gap:9px;
+}
+.col-body.dragover{background:#EFE9D6;}
+.card{
+  background:var(--paper-card);border:1px solid var(--line-soft);border-radius:3px;
+  padding:11px 12px;box-shadow:var(--shadow);cursor:grab;position:relative;
+}
+.card:active{cursor:grabbing;}
+.card.readonly{cursor:not-allowed;opacity:.6;}
+.card.readonly:active{cursor:not-allowed;}
+.card .causa{
+  font-family:'IBM Plex Mono';font-weight:600;font-size:12px;color:var(--brass-dark);
+  letter-spacing:.02em;
+}
+.card .cand{font-size:13.5px;font-weight:600;margin:3px 0 2px;line-height:1.25;}
+.card .meta{font-size:11.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;margin-top:5px;}
+.card .meta span{display:inline-flex;align-items:center;gap:4px;}
+.card .file-chip{
+  margin-top:7px;font-size:11px;color:var(--ink-soft);
+  display:inline-flex;align-items:center;gap:4px;border:1px dashed var(--line);
+  padding:3px 7px;border-radius:2px;
+}
+.card .stamp{
+  position:absolute;top:8px;right:8px;font-size:9.5px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;padding:2px 6px;border-radius:2px;
+  transform:rotate(-3deg);
+}
+.stamp.Acoge{background:var(--green-bg);color:var(--green);border:1px solid var(--green);}
+.stamp.Rechaza{background:var(--red-bg);color:var(--red);border:1px solid var(--red);}
+.stamp.AcogeParcial{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber);}
+.stamp.Pendiente{background:#EEF0F3;color:var(--muted);border:1px solid var(--line);}
+.empty-col{padding:22px 8px;text-align:center;color:var(--muted);font-size:12.5px;font-style:italic;}
 
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 3px var(--teal-bg); }
-    50% { box-shadow: 0 0 0 6px transparent; }
-  }
+/* ---------- Table ---------- */
+.table-wrap{margin-top:18px;background:var(--paper-card);border:1px solid var(--line-soft);border-radius:var(--radius);box-shadow:var(--shadow);overflow-x:auto;}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:1000px;}
+thead th{
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
+  padding:10px 12px;border-bottom:2px solid var(--ink);white-space:nowrap;cursor:pointer;
+}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--line-soft);vertical-align:middle;}
+tbody tr:hover{background:#F5F6F8;}
+.badge{
+  font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.03em;
+  white-space:nowrap;
+}
+.badge.Asignado{background:#EEE9DC;color:#7C6A3E;}
+.badge.EnProceso{background:var(--amber-bg);color:var(--amber);}
+.badge.RevisionJefatura{background:#EDE4F1;color:#6B4A82;}
+.badge.Terminado{background:var(--green-bg);color:var(--green);}
+.rowbtn{border:none;background:none;cursor:pointer;color:var(--brass-dark);font-size:12px;font-weight:600;padding:2px 4px;}
+.rowbtn-disabled{color:var(--muted);font-size:12px;font-weight:600;padding:2px 4px;cursor:not-allowed;}
+.rowbtn.del{color:var(--red);}
+.mono{font-family:'IBM Plex Mono';font-size:12px;}
+.no-results{padding:40px;text-align:center;color:var(--muted);font-style:italic;}
 
-  nav {
-    display: flex;
-    gap: 0;
-    flex: 1;
-    height: 100%;
-  }
+/* ---------- Modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(15,22,36,.55);display:none;
+  align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;z-index:50;
+}
+.overlay.show{display:flex;}
+.modal{
+  background:#fff;width:100%;max-width:640px;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+.modal-head{
+  background:var(--ink);color:#fff;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;
+}
+.modal-head h2{font-family:'Source Serif 4',serif;font-size:19px;margin:0;font-weight:700;}
+.modal-head button{background:none;border:none;color:#AEB6C6;font-size:20px;cursor:pointer;}
+.modal-body{padding:20px 22px;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;max-height:70vh;overflow:auto;}
+.field{display:flex;flex-direction:column;gap:4px;}
+.field.full{grid-column:1/-1;}
+.field label{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;}
+.field input[type=text], .field input[type=date], .field select, .field textarea{
+  font-family:'IBM Plex Sans';font-size:13.5px;padding:8px 10px;border:1px solid var(--line);border-radius:2px;
+}
+.field textarea{resize:vertical;min-height:54px;}
+.checks{display:flex;gap:16px;flex-wrap:wrap;}
+.check{display:flex;align-items:center;gap:6px;font-size:13px;}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.file-row{display:flex;align-items:center;gap:10px;}
+.file-row .cur{font-size:12px;color:var(--muted);}
 
-  .tab {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 0 18px;
-    height: 100%;
-    font-size: 13.5px;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-    user-select: none;
-    white-space: nowrap;
-  }
-
-  .tab:hover { color: var(--white); }
-
-  .tab.active {
-    color: var(--teal);
-    border-bottom-color: var(--teal);
-  }
-
-  .tab svg { width: 15px; height: 15px; flex-shrink: 0; }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-left: auto;
-  }
-
-  .badge-count {
-    background: var(--teal);
-    color: var(--navy);
-    font-size: 10px;
-    font-weight: 700;
-    border-radius: 99px;
-    padding: 1px 6px;
-    min-width: 18px;
-    text-align: center;
-  }
-
-  .avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--navy-3);
-    border: 1.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--teal);
-    cursor: pointer;
-  }
-
-  /* ── LAYOUT ── */
-  main { flex: 1; display: flex; flex-direction: column; }
-
-  .panel { display: none; padding: 2rem; flex: 1; flex-direction: column; gap: 1.5rem; }
-  .panel.active { display: flex; }
-
-  /* ── PANEL 1: INFORMES ── */
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .panel-title {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: -0.3px;
-  }
-
-  .panel-subtitle {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: var(--teal);
-    color: var(--navy);
-    font-size: 13.5px;
-    font-weight: 600;
-    padding: 9px 18px;
-    border-radius: var(--radius);
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    white-space: nowrap;
-  }
-  .btn-primary:hover { background: var(--teal-dim); }
-  .btn-primary:active { transform: scale(0.98); }
-  .btn-primary svg { width: 15px; height: 15px; }
-
-  .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 7px 14px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .btn-ghost:hover { color: var(--white); border-color: var(--border-hover); }
-  .btn-ghost svg { width: 14px; height: 14px; }
-
-  /* UPLOAD ZONE */
-  .upload-zone {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius-lg);
-    padding: 3rem 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    background: rgba(255,255,255,0.015);
-    position: relative;
-  }
-  .upload-zone:hover, .upload-zone.drag-over {
-    border-color: var(--teal);
-    background: var(--teal-bg);
-  }
-  .upload-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-  .upload-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--teal-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-  }
-  .upload-icon svg { width: 24px; height: 24px; stroke: var(--teal); }
-  .upload-title {
-    font-family: var(--font-display);
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 6px;
-  }
-  .upload-sub { font-size: 13px; color: var(--muted); }
-  .upload-types {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 14px;
-    flex-wrap: wrap;
-  }
-  .type-pill {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 99px;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* FILTER BAR */
-  .filter-bar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 200px;
-  }
-  .search-wrap svg {
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 15px;
-    height: 15px;
-    stroke: var(--muted);
-    pointer-events: none;
-  }
-  .search-wrap input {
-    width: 100%;
-    background: var(--navy-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 8px 12px 8px 34px;
-    color: var(--white);
-    font-size: 13.5px;
-    font-family: var(--font);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .search-wrap input:focus { border-color: var(--teal); }
-  .search-wrap input::placeholder { color: var(--muted-2); }
-
-  select.filter-select {
-    background: var(--navy-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 8px 12px;
-    color: var(--muted);
-    font-size: 13.5px;
-    font-family: var(--font);
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    padding-right: 28px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238CA0B3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 9px center;
-    transition: border-color 0.15s;
-  }
-  select.filter-select:focus { border-color: var(--teal); }
-
-  /* TABLE */
-  .table-card {
-    background: var(--navy-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-
-  table { width: 100%; border-collapse: collapse; }
-
-  thead th {
-    padding: 11px 16px;
-    text-align: left;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    background: rgba(0,0,0,0.15);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.12s;
-    cursor: default;
-  }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: rgba(255,255,255,0.03); }
-
-  td {
-    padding: 13px 16px;
-    font-size: 13.5px;
-    vertical-align: middle;
-  }
-
-  .file-cell {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .file-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 800;
-    flex-shrink: 0;
-    letter-spacing: 0.5px;
-  }
-  .file-icon.pdf { background: rgba(248,113,113,0.15); color: var(--danger); }
-  .file-icon.xlsx { background: rgba(52,211,153,0.15); color: var(--success); }
-  .file-icon.docx { background: rgba(96,165,250,0.15); color: var(--info); }
-  .file-icon.pptx { background: rgba(251,191,36,0.15); color: var(--warning); }
-
-  .file-name { font-weight: 500; color: var(--white); font-size: 13.5px; }
-  .file-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-  .status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 99px;
-  }
-  .status-pill::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .status-pill.revisión { background: var(--warning-bg); color: var(--warning); }
-  .status-pill.revisión::before { background: var(--warning); }
-  .status-pill.aprobado { background: var(--success-bg); color: var(--success); }
-  .status-pill.aprobado::before { background: var(--success); }
-  .status-pill.pendiente { background: var(--info-bg); color: var(--info); }
-  .status-pill.pendiente::before { background: var(--info); }
-  .status-pill.rechazado { background: var(--danger-bg); color: var(--danger); }
-  .status-pill.rechazado::before { background: var(--danger); }
-
-  .td-muted { color: var(--muted); }
-
-  .action-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    transition: color 0.12s, background 0.12s;
-  }
-  .action-btn:hover { color: var(--teal); background: var(--teal-bg); }
-  .action-btn svg { width: 15px; height: 15px; }
-
-  .actions-cell { display: flex; gap: 4px; }
-
-  /* STATS ROW */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
-  }
-
-  .stat-card {
-    background: var(--navy-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.2rem;
-    transition: border-color 0.15s;
-  }
-  .stat-card:hover { border-color: var(--border-hover); }
-  .stat-label {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-  .stat-value {
-    font-family: var(--font-display);
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1;
-  }
-  .stat-value.teal { color: var(--teal); }
-  .stat-value.success { color: var(--success); }
-  .stat-value.warning { color: var(--warning); }
-  .stat-value.danger { color: var(--danger); }
-  .stat-trend {
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-top: 5px;
-  }
-
-  /* ── PANEL 2: SEGUIMIENTO ── */
-  .timeline-wrap {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  @media (max-width: 900px) {
-    .timeline-wrap { grid-template-columns: 1fr; }
-  }
-
-  .kanban-cols {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-  }
-
-  .kanban-col {
-    background: var(--navy-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-
-  .kanban-header {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .kanban-col-title {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-  }
-
-  .kanban-count {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 99px;
-    min-width: 20px;
-    text-align: center;
-  }
-
-  .kanban-items { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-
-  .kanban-card {
-    background: var(--navy-3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
-    cursor: default;
-    transition: border-color 0.12s;
-  }
-  .kanban-card:hover { border-color: var(--border-hover); }
-  .kanban-card-title { font-size: 13px; font-weight: 500; color: var(--white); line-height: 1.4; }
-  .kanban-card-meta { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
-
-  .activity-panel {
-    background: var(--navy-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-  .activity-header {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .activity-header svg { width: 15px; height: 15px; stroke: var(--teal); }
-  .activity-list { padding: 6px 0; max-height: 500px; overflow-y: auto; }
-
-  .activity-item {
-    padding: 10px 16px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-  }
-  .activity-item:last-child { border-bottom: none; }
-  .activity-item:hover { background: rgba(255,255,255,0.02); }
-
-  .activity-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 4px;
-  }
-  .activity-content { flex: 1; }
-  .activity-text { font-size: 13px; color: var(--text); line-height: 1.4; }
-  .activity-text strong { color: var(--white); font-weight: 500; }
-  .activity-time { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
-
-  /* ── PANEL 3: NORMATIVA ── */
-  .normativa-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 14px;
-  }
-
-  .norma-card {
-    background: var(--navy-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.2rem 1.4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: border-color 0.15s;
-    cursor: default;
-  }
-  .norma-card:hover { border-color: var(--teal-border); }
-
-  .norma-top { display: flex; align-items: flex-start; gap: 12px; }
-
-  .norma-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: var(--teal-bg);
-    border: 1px solid var(--teal-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .norma-icon svg { width: 20px; height: 20px; stroke: var(--teal); }
-
-  .norma-info { flex: 1; }
-  .norma-code {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--teal);
-    margin-bottom: 4px;
-  }
-  .norma-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.35;
-  }
-  .norma-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
-
-  .norma-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
-    gap: 8px;
-  }
-  .norma-date { font-size: 12px; color: var(--muted-2); }
-
-  .norma-tag {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 99px;
-    white-space: nowrap;
-  }
-  .norma-tag.vigente { background: var(--success-bg); color: var(--success); }
-  .norma-tag.referencia { background: var(--info-bg); color: var(--info); }
-  .norma-tag.interna { background: var(--teal-bg); color: var(--teal); }
-
-  .norma-actions { display: flex; gap: 6px; }
-
-  /* Section title */
-  .section-title {
-    font-size: 11.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.7px;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-
-  /* Empty state */
-  .empty {
-    text-align: center;
-    padding: 3rem 2rem;
-    color: var(--muted);
-  }
-  .empty svg { width: 40px; height: 40px; margin: 0 auto 1rem; stroke: var(--muted-2); display: block; }
-  .empty p { font-size: 14px; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--muted-2); border-radius: 99px; }
+@media (max-width:1150px){
+  .board{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:900px){
+  .board{grid-template-columns:1fr;}
+  .modal-body{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<header>
-  <div class="logo">
-    <span class="logo-dot"></span>
-    GestiónDoc
-  </div>
-  <nav>
-    <div class="tab active" onclick="switchTab('informes', this)">
-      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Informes
-    </div>
-    <div class="tab" onclick="switchTab('seguimiento', this)">
-      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-      Seguimiento
-      <span class="badge-count">3</span>
-    </div>
-    <div class="tab" onclick="switchTab('normativa', this)">
-      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      Normativa y respaldos
-    </div>
-  </nav>
-  <div class="header-right">
-    <button class="btn-ghost" style="padding:6px 12px; font-size:12.5px;">
-      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:13px;height:13px;"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      Alertas
-    </button>
-    <div class="avatar" title="Perfil">MC</div>
-  </div>
-</header>
-
-<main>
-  <!-- ══ PANEL 1: INFORMES ══ -->
-  <section class="panel active" id="panel-informes">
-
-    <div class="panel-header">
-      <div>
-        <div class="panel-title">Informes</div>
-        <div class="panel-subtitle">Carga y visualiza documentos institucionales</div>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn-ghost">
-          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          Vista lista
-        </button>
-        <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
-          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Cargar informe
-        </button>
-      </div>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">Total informes</div>
-        <div class="stat-value teal">24</div>
-        <div class="stat-trend">↑ 4 este mes</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Aprobados</div>
-        <div class="stat-value success">16</div>
-        <div class="stat-trend">67% del total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">En revisión</div>
-        <div class="stat-value warning">5</div>
-        <div class="stat-trend">Requieren acción</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Rechazados</div>
-        <div class="stat-value danger">3</div>
-        <div class="stat-trend">Con observaciones</div>
-      </div>
-    </div>
-
-    <div class="upload-zone" id="uploadZone">
-      <input type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.pptx" onchange="handleFiles(this.files)" />
-      <div class="upload-icon">
-        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </div>
-      <div class="upload-title">Arrastra tus archivos aquí</div>
-      <div class="upload-sub">o haz clic para seleccionar desde tu equipo</div>
-      <div class="upload-types">
-        <span class="type-pill">PDF</span>
-        <span class="type-pill">DOCX</span>
-        <span class="type-pill">XLSX</span>
-        <span class="type-pill">PPTX</span>
-      </div>
-    </div>
-
+  <div class="header">
+    <div class="seal">UCE</div>
     <div>
-      <div class="filter-bar">
-        <div class="search-wrap">
-          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" placeholder="Buscar informe..." id="searchInput" oninput="filterTable()" />
-        </div>
-        <select class="filter-select" id="statusFilter" onchange="filterTable()">
-          <option value="">Todos los estados</option>
-          <option value="Aprobado">Aprobado</option>
-          <option value="En revisión">En revisión</option>
-          <option value="Pendiente">Pendiente</option>
-          <option value="Rechazado">Rechazado</option>
-        </select>
-        <select class="filter-select" id="typeFilter" onchange="filterTable()">
-          <option value="">Todos los tipos</option>
-          <option value="PDF">PDF</option>
-          <option value="DOCX">DOCX</option>
-          <option value="XLSX">XLSX</option>
-        </select>
-      </div>
+      <h1>Control de Informes Unidad de Contabilidad Electoral</h1>
+      <p>Seguimiento de auditoría e informes de cuentas · candidatos electorales</p>
     </div>
+    <div class="exp-count"><b id="statTotal">0</b>expedientes registrados</div>
+    <div class="userbar">
+      <span id="userbarLabel">Sin identificar</span>
+      <button class="btn secondary" id="btnSwitchUser" type="button">Cambiar usuario</button>
+    </div>
+  </div>
 
-    <div class="table-card">
+  <div class="dashboard" id="dashboard">
+    <div class="dashboard-head">
+      <h2>Estado de los informes</h2>
+      <span>Haz clic en un estado para filtrarlo</span>
+    </div>
+    <div class="dashboard-body">
+      <div class="dash-chart">
+        <svg viewBox="0 0 160 160" id="dashDonut"></svg>
+        <div class="dash-center" id="dashCenter"></div>
+      </div>
+      <div class="dash-legend" id="dashLegend"></div>
+    </div>
+  </div>
+
+  <div class="links-apoyo" id="linksApoyo">
+    <span class="links-apoyo-title">Links de apoyo</span>
+    <a href="https://pregasto.servel.cl/home" target="_blank" rel="noopener noreferrer" class="link-chip">
+      <span class="link-name">Sistema de Gasto</span>
+      <span class="link-url">pregasto.servel.cl</span>
+    </a>
+    <a href="http://168.13.3.93:8020/" target="_blank" rel="noopener noreferrer" class="link-chip">
+      <span class="link-name">SAR</span>
+      <span class="link-url">168.13.3.93:8020</span>
+    </a>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="fSearch" placeholder="Buscar causa…">
+    <select id="fAuditor"><option value="">Todos los auditores</option></select>
+    <select id="fEstado">
+      <option value="">Todos los estados</option>
+      <option value="Asignado">Asignado</option>
+      <option value="En Proceso">En proceso</option>
+      <option value="Revision Jefatura">Revisión jefatura</option>
+      <option value="Terminado">Terminado</option>
+    </select>
+    <div class="spacer"></div>
+    <div class="view-toggle">
+      <button id="btnKanban" class="active">Tablero</button>
+      <button id="btnTabla">Tabla</button>
+    </div>
+    <button class="btn secondary" id="btnExport">Exportar CSV</button>
+    <button class="btn brass" id="btnNew">+ Nuevo expediente</button>
+  </div>
+
+  <div id="kanbanView">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div id="tablaView" style="display:none;">
+    <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Tipo</th>
-            <th>Estado</th>
-            <th>Responsable</th>
-            <th>Cargado</th>
-            <th>Tamaño</th>
+            <th data-k="causa">Causa</th>
+            <th data-k="auditor">Auditor</th>
+            <th data-k="fechaAsignacion">Asignación</th>
+            <th data-k="estado">Estado</th>
+            <th data-k="resultado">Resultado</th>
+            <th>Archivo</th>
             <th></th>
           </tr>
         </thead>
-        <tbody id="reportTable">
-          <tr>
-            <td><div class="file-cell"><div class="file-icon pdf">PDF</div><div><div class="file-name">Informe anual 2024</div><div class="file-meta">Gerencia General</div></div></div></td>
-            <td class="td-muted">PDF</td>
-            <td><span class="status-pill aprobado">Aprobado</span></td>
-            <td class="td-muted">M. Castro</td>
-            <td class="td-muted">12 jun 2025</td>
-            <td class="td-muted">4.2 MB</td>
-            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
-          </tr>
-          <tr>
-            <td><div class="file-cell"><div class="file-icon xlsx">XLSX</div><div><div class="file-name">Cierre financiero Q2</div><div class="file-meta">Finanzas</div></div></div></td>
-            <td class="td-muted">XLSX</td>
-            <td><span class="status-pill revisión">En revisión</span></td>
-            <td class="td-muted">F. Rojas</td>
-            <td class="td-muted">18 jun 2025</td>
-            <td class="td-muted">1.8 MB</td>
-            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
-          </tr>
-          <tr>
-            <td><div class="file-cell"><div class="file-icon docx">DOCX</div><div><div class="file-name">Auditoría interna operaciones</div><div class="file-meta">Auditoría</div></div></div></td>
-            <td class="td-muted">DOCX</td>
-            <td><span class="status-pill pendiente">Pendiente</span></td>
-            <td class="td-muted">L. Mendoza</td>
-            <td class="td-muted">20 jun 2025</td>
-            <td class="td-muted">890 KB</td>
-            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
-          </tr>
-          <tr>
-            <td><div class="file-cell"><div class="file-icon pdf">PDF</div><div><div class="file-name">Reporte de cumplimiento normativo</div><div class="file-meta">Compliance</div></div></div></td>
-            <td class="td-muted">PDF</td>
-            <td><span class="status-pill aprobado">Aprobado</span></td>
-            <td class="td-muted">P. Vidal</td>
-            <td class="td-muted">22 jun 2025</td>
-            <td class="td-muted">3.1 MB</td>
-            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
-          </tr>
-          <tr>
-            <td><div class="file-cell"><div class="file-icon xlsx">XLSX</div><div><div class="file-name">Presupuesto H2 2025</div><div class="file-meta">Finanzas</div></div></div></td>
-            <td class="td-muted">XLSX</td>
-            <td><span class="status-pill rechazado">Rechazado</span></td>
-            <td class="td-muted">F. Rojas</td>
-            <td class="td-muted">24 jun 2025</td>
-            <td class="td-muted">2.4 MB</td>
-            <td><div class="actions-cell"><button class="action-btn" title="Ver"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></div></td>
-          </tr>
-        </tbody>
+        <tbody id="tbody"></tbody>
       </table>
+      <div class="no-results" id="noResults" style="display:none;">No hay expedientes que coincidan con el filtro.</div>
     </div>
-  </section>
+  </div>
 
-  <!-- ══ PANEL 2: SEGUIMIENTO ══ -->
-  <section class="panel" id="panel-seguimiento">
-    <div class="panel-header">
-      <div>
-        <div class="panel-title">Seguimiento de informes</div>
-        <div class="panel-subtitle">Estado y trazabilidad de cada documento</div>
-      </div>
-      <button class="btn-ghost">
-        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M3 4a1 1 0 011-1h16a1 1 0 010 2H4a1 1 0 01-1-1zm3 4a1 1 0 011-1h10a1 1 0 010 2H7a1 1 0 01-1-1zm4 4a1 1 0 011-1h2a1 1 0 010 2h-2a1 1 0 01-1-1z"/></svg>
-        Filtrar
-      </button>
-    </div>
+</div>
 
-    <div class="kanban-cols">
-      <div class="kanban-col">
-        <div class="kanban-header">
-          <span class="kanban-col-title" style="color:var(--info);">Pendiente</span>
-          <span class="kanban-count" style="background:var(--info-bg);color:var(--info);">2</span>
-        </div>
-        <div class="kanban-items">
-          <div class="kanban-card">
-            <div class="kanban-card-title">Auditoría interna operaciones</div>
-            <div class="kanban-card-meta">L. Mendoza · Vence 30 jun</div>
-          </div>
-          <div class="kanban-card">
-            <div class="kanban-card-title">Informe de riesgos Q3</div>
-            <div class="kanban-card-meta">G. Torres · Vence 5 jul</div>
-          </div>
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Nuevo expediente</h2>
+      <button id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>N° Causa (Rol Tricel)</label><input type="text" id="fldCausa" placeholder="ej. 1234-2025"></div>
+      <div class="field"><label>Auditor asignado</label>
+        <select id="fldAuditor">
+          <option value="">— Selecciona auditor —</option>
+          <option>Felipe Sarabia</option>
+          <option>Julissa Lazo</option>
+          <option>Camila Chaparro</option>
+          <option>Jose Celedon</option>
+          <option>Ximena Valdebenito</option>
+          <option>Miguel Baeza</option>
+          <option>Veronica Palavecino</option>
+        </select>
+      </div>
+      <datalist id="auditorList"></datalist>
+      <div class="field"><label>Fecha de asignación</label><input type="date" id="fldFecha"></div>
+      <div class="field full">
+        <label>Detalle</label>
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="fldModInforme"> Modifica informe</label>
+          <label class="check"><input type="checkbox" id="fldModReembolso"> Modifica reembolso</label>
+          <label class="check"><input type="checkbox" id="fldEnviado"> Enviado a jefatura</label>
         </div>
       </div>
-      <div class="kanban-col">
-        <div class="kanban-header">
-          <span class="kanban-col-title" style="color:var(--warning);">En revisión</span>
-          <span class="kanban-count" style="background:var(--warning-bg);color:var(--warning);">3</span>
-        </div>
-        <div class="kanban-items">
-          <div class="kanban-card">
-            <div class="kanban-card-title">Cierre financiero Q2</div>
-            <div class="kanban-card-meta">F. Rojas · Revisado por J. Silva</div>
-          </div>
-          <div class="kanban-card">
-            <div class="kanban-card-title">Evaluación de proveedores</div>
-            <div class="kanban-card-meta">A. Muñoz · 2 observaciones</div>
-          </div>
-          <div class="kanban-card">
-            <div class="kanban-card-title">Plan de continuidad TI</div>
-            <div class="kanban-card-meta">C. Paredes · Revisado</div>
-          </div>
-        </div>
-      </div>
-      <div class="kanban-col">
-        <div class="kanban-header">
-          <span class="kanban-col-title" style="color:var(--success);">Aprobado</span>
-          <span class="kanban-count" style="background:var(--success-bg);color:var(--success);">4</span>
-        </div>
-        <div class="kanban-items">
-          <div class="kanban-card">
-            <div class="kanban-card-title">Informe anual 2024</div>
-            <div class="kanban-card-meta">M. Castro · Aprobado 12 jun</div>
-          </div>
-          <div class="kanban-card">
-            <div class="kanban-card-title">Reporte cumplimiento normativo</div>
-            <div class="kanban-card-meta">P. Vidal · Aprobado 22 jun</div>
-          </div>
-          <div class="kanban-card">
-            <div class="kanban-card-title">Balance social 2024</div>
-            <div class="kanban-card-meta">R. Núñez · Aprobado 8 jun</div>
-          </div>
-          <div class="kanban-card">
-            <div class="kanban-card-title">Informe de sostenibilidad</div>
-            <div class="kanban-card-meta">K. Reyes · Aprobado 1 jun</div>
-          </div>
-        </div>
-      </div>
-      <div class="kanban-col">
-        <div class="kanban-header">
-          <span class="kanban-col-title" style="color:var(--danger);">Rechazado</span>
-          <span class="kanban-count" style="background:var(--danger-bg);color:var(--danger);">1</span>
-        </div>
-        <div class="kanban-items">
-          <div class="kanban-card">
-            <div class="kanban-card-title">Presupuesto H2 2025</div>
-            <div class="kanban-card-meta">F. Rojas · Observaciones pendientes</div>
-          </div>
+      <div class="field"><label>Fecha enviado a jefatura</label><input type="date" id="fldFechaEnviado"></div>
+      <div class="field full">
+        <label>Archivo del informe (para revisión)</label>
+        <div class="file-row">
+          <input type="file" id="fldArchivo">
+          <span class="cur" id="curArchivo"></span>
+          <button class="btn secondary" id="btnQuitarArchivo" type="button" style="display:none;">Quitar</button>
         </div>
       </div>
     </div>
+    <div class="modal-foot">
+      <button class="btn secondary" id="btnDelete" style="display:none;">Eliminar expediente</button>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        <button class="btn secondary" id="btnCancel">Cancelar</button>
+        <button class="btn brass" id="btnSave">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <div class="activity-panel">
-      <div class="activity-header">
-        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Actividad reciente
-      </div>
-      <div class="activity-list">
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--danger);"></div>
-          <div class="activity-content">
-            <div class="activity-text"><strong>Presupuesto H2 2025</strong> fue rechazado con 2 observaciones.</div>
-            <div class="activity-time">Hace 2 horas · J. Silva (Revisor)</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--success);"></div>
-          <div class="activity-content">
-            <div class="activity-text"><strong>Reporte de cumplimiento normativo</strong> fue aprobado.</div>
-            <div class="activity-time">Ayer 14:32 · Dirección General</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--warning);"></div>
-          <div class="activity-content">
-            <div class="activity-text"><strong>Cierre financiero Q2</strong> ingresó a revisión por F. Rojas.</div>
-            <div class="activity-time">18 jun · 09:15</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--info);"></div>
-          <div class="activity-content">
-            <div class="activity-text"><strong>Auditoría interna operaciones</strong> fue cargado por L. Mendoza.</div>
-            <div class="activity-time">20 jun · 11:40</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--success);"></div>
-          <div class="activity-content">
-            <div class="activity-text"><strong>Informe anual 2024</strong> fue aprobado con firma electrónica.</div>
-            <div class="activity-time">12 jun · 16:05</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot" style="background:var(--teal);"></div>
-          <div class="activity-content">
-            <div class="activity-text"><strong>Plan de continuidad TI</strong> asignado a C. Paredes para revisión.</div>
-            <div class="activity-time">10 jun · 08:20</div>
-          </div>
-        </div>
-      </div>
+<!-- Login -->
+<div class="overlay" id="loginOverlay">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-head">
+      <h2>Identifícate</h2>
     </div>
-  </section>
-
-  <!-- ══ PANEL 3: NORMATIVA ══ -->
-  <section class="panel" id="panel-normativa">
-    <div class="panel-header">
-      <div>
-        <div class="panel-title">Normativa y respaldos</div>
-        <div class="panel-subtitle">Marco regulatorio, resoluciones y documentos de respaldo vigentes</div>
+    <div class="modal-body" style="grid-template-columns:1fr;">
+      <div class="field">
+        <label>Usuario</label>
+        <select id="loginUser">
+          <option value="">— Selecciona —</option>
+        </select>
       </div>
-      <div style="display:flex;gap:10px;">
-        <button class="btn-ghost">
-          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:14px;height:14px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Buscar
-        </button>
-        <button class="btn-primary">
-          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Agregar documento
-        </button>
+      <div class="field" id="loginPassField" style="display:none;">
+        <label>Contraseña</label>
+        <input type="password" id="loginPass">
       </div>
+      <div id="loginError" style="display:none;color:var(--red);font-size:12.5px;">Contraseña incorrecta.</div>
+      <p style="font-size:11.5px;color:var(--muted);margin:0;">Los expedientes en "Revisión jefatura" solo son visibles para Jefatura y para el auditor asignado a cada uno.</p>
     </div>
-
-    <div>
-      <div class="section-title">Normativa vigente</div>
-      <div class="normativa-grid">
-        <div class="norma-card">
-          <div class="norma-top">
-            <div class="norma-icon">
-              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <div class="norma-info">
-              <div class="norma-code">Ley 19.880</div>
-              <div class="norma-title">Bases de procedimientos administrativos</div>
-            </div>
-          </div>
-          <div class="norma-desc">Establece y regula las bases del procedimiento administrativo de los actos de la Administración del Estado.</div>
-          <div class="norma-footer">
-            <span class="norma-date">Vigente desde 2003</span>
-            <span class="norma-tag vigente">Vigente</span>
-            <div class="norma-actions">
-              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-            </div>
-          </div>
-        </div>
-        <div class="norma-card">
-          <div class="norma-top">
-            <div class="norma-icon">
-              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </div>
-            <div class="norma-info">
-              <div class="norma-code">Res. Ex. 1.600</div>
-              <div class="norma-title">Normas de visación de resoluciones y contratos</div>
-            </div>
-          </div>
-          <div class="norma-desc">Fija normas que reemplazan las instrucciones sobre materias de personal, contabilidad, contratos y servicios.</div>
-          <div class="norma-footer">
-            <span class="norma-date">Actualizada 2008</span>
-            <span class="norma-tag vigente">Vigente</span>
-            <div class="norma-actions">
-              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-            </div>
-          </div>
-        </div>
-        <div class="norma-card">
-          <div class="norma-top">
-            <div class="norma-icon">
-              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            </div>
-            <div class="norma-info">
-              <div class="norma-code">NCh-ISO 9001:2015</div>
-              <div class="norma-title">Sistema de gestión de calidad</div>
-            </div>
-          </div>
-          <div class="norma-desc">Norma que especifica requisitos para sistemas de gestión de calidad aplicables a cualquier organización.</div>
-          <div class="norma-footer">
-            <span class="norma-date">Versión 2015</span>
-            <span class="norma-tag referencia">Referencia</span>
-            <div class="norma-actions">
-              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="modal-foot">
+      <div></div>
+      <button class="btn brass" id="btnLogin">Ingresar</button>
     </div>
-
-    <div>
-      <div class="section-title">Documentos internos y respaldos</div>
-      <div class="normativa-grid">
-        <div class="norma-card">
-          <div class="norma-top">
-            <div class="norma-icon">
-              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </div>
-            <div class="norma-info">
-              <div class="norma-code">POL-001</div>
-              <div class="norma-title">Política de gestión documental</div>
-            </div>
-          </div>
-          <div class="norma-desc">Define los criterios institucionales para la creación, clasificación, almacenamiento y eliminación de documentos.</div>
-          <div class="norma-footer">
-            <span class="norma-date">Rev. ene 2025</span>
-            <span class="norma-tag interna">Interna</span>
-            <div class="norma-actions">
-              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-            </div>
-          </div>
-        </div>
-        <div class="norma-card">
-          <div class="norma-top">
-            <div class="norma-icon">
-              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <div class="norma-info">
-              <div class="norma-code">MAN-003</div>
-              <div class="norma-title">Manual de control de informes y reportes</div>
-            </div>
-          </div>
-          <div class="norma-desc">Procedimientos de validación, firma y distribución de informes institucionales hacia entes reguladores.</div>
-          <div class="norma-footer">
-            <span class="norma-date">Rev. mar 2025</span>
-            <span class="norma-tag interna">Interna</span>
-            <div class="norma-actions">
-              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-            </div>
-          </div>
-        </div>
-        <div class="norma-card">
-          <div class="norma-top">
-            <div class="norma-icon">
-              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-            </div>
-            <div class="norma-info">
-              <div class="norma-code">RES-EX-421</div>
-              <div class="norma-title">Resolución de aprobación sistema de gestión</div>
-            </div>
-          </div>
-          <div class="norma-desc">Resolución exenta que aprueba e implementa el presente sistema de gestión documental institucional.</div>
-          <div class="norma-footer">
-            <span class="norma-date">Dic 2024</span>
-            <span class="norma-tag vigente">Vigente</span>
-            <div class="norma-actions">
-              <button class="action-btn" title="Ver documento"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              <button class="action-btn" title="Descargar"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
+  </div>
+</div>
 
 <script>
-  function switchTab(panelId, el) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('panel-' + panelId).classList.add('active');
-  }
+/* ===================== Datos semilla (extraídos del control original) ===================== */
+const SEED = [{"id": 1, "auditor": "Rene", "fechaAsignacion": "2026-05-03", "causa": "996-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-04-28", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 2, "auditor": "Mauricio", "fechaAsignacion": "2026-05-03", "causa": "973-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-04", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 3, "auditor": "Javier", "fechaAsignacion": "2026-05-03", "causa": "991-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-04", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 4, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-05-03", "causa": "425-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 5, "auditor": "sebastian", "fechaAsignacion": "2026-05-03", "causa": "456-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-18", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 6, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-03", "causa": "914-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-04-29", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 7, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-03", "causa": "1301-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-04-29", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 8, "auditor": "Alejandro", "fechaAsignacion": "2026-05-03", "causa": "972-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-04", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 9, "auditor": "Mauricio", "fechaAsignacion": "2026-05-03", "causa": "947-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-18", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 10, "auditor": "Daniel", "fechaAsignacion": "2026-05-03", "causa": "953-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-04", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 11, "auditor": "Cristian", "fechaAsignacion": "2026-05-03", "causa": "1232-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-04", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 12, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-03", "causa": "1203-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-12", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 13, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-03", "causa": "1234-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-12", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 14, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-03", "causa": "930-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-11", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 15, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-15", "causa": "1002-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 16, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-15", "causa": "1173-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 17, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-05-15", "causa": "1191-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 18, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-05-15", "causa": "1197-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 19, "auditor": "Katherine", "fechaAsignacion": "2026-05-15", "causa": "1233-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 20, "auditor": "daniela/yesi", "fechaAsignacion": "2026-05-15", "causa": "1547-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 21, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-05-15", "causa": "570-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-20", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 22, "auditor": "alejandro /carolina", "fechaAsignacion": "2026-05-15", "causa": "799-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-20", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 23, "auditor": "Mauricio/gloria", "fechaAsignacion": "2026-05-15", "causa": "979-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-20", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 24, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-05-15", "causa": "1036-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-20", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 25, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-05-15", "causa": "1050-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "corrección", "estado": "Terminado", "archivoNombre": ""}, {"id": 26, "auditor": "Javier", "fechaAsignacion": "2026-05-15", "causa": "1560-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 27, "auditor": "alex", "fechaAsignacion": "2026-05-24", "causa": "1126-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-28", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 28, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-05-24", "causa": "1297-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 29, "auditor": "daniela", "fechaAsignacion": "2026-05-24", "causa": "1099-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 30, "auditor": "edith", "fechaAsignacion": "2026-05-24", "causa": "1065-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 31, "auditor": "waldemar", "fechaAsignacion": "2026-05-24", "causa": "1071-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 32, "auditor": "myriam", "fechaAsignacion": "2026-05-24", "causa": "1330-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 33, "auditor": "pedro", "fechaAsignacion": "2026-05-24", "causa": "1121-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 34, "auditor": "ursula", "fechaAsignacion": "2026-05-24", "causa": "1091-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 35, "auditor": "tamara", "fechaAsignacion": "2026-05-24", "causa": "1471-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 36, "auditor": "alejandro", "fechaAsignacion": "2026-05-24", "causa": "1056-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 37, "auditor": "gloria", "fechaAsignacion": "2026-05-24", "causa": "1072-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 38, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-05-24", "causa": "1371-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 39, "auditor": "mauricio", "fechaAsignacion": "2026-05-24", "causa": "1037-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 40, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-05-24", "causa": "1270-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 41, "auditor": "katherine", "fechaAsignacion": "2026-05-24", "causa": "1276-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 42, "auditor": "patricia", "fechaAsignacion": "2026-05-24", "causa": "1277-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 43, "auditor": "Jose Celedon", "fechaAsignacion": "2026-05-24", "causa": "1286-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "corrección", "estado": "Terminado", "archivoNombre": ""}, {"id": 44, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1030-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-16", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 45, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-06-15", "causa": "1053-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-16", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 46, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "1077-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-16", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 47, "auditor": "kathy", "fechaAsignacion": "2026-06-15", "causa": "1101-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-16", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 48, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1142-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "sentencia incongruente", "estado": "Terminado", "archivoNombre": ""}, {"id": 49, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-06-15", "causa": "1149-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 50, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "1152-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 51, "auditor": "kathy", "fechaAsignacion": "2026-06-15", "causa": "1154-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-16", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 52, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1211-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-16", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 53, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-06-15", "causa": "1227-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 54, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "1251-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 55, "auditor": "kathy", "fechaAsignacion": "2026-06-15", "causa": "1258-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 56, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "1281-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": false, "fechaEnviado": "2025-01-01", "observacion": "enviado anteriormente", "estado": "Terminado", "archivoNombre": ""}, {"id": 57, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-06-15", "causa": "1309-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 58, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "1313-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 59, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "1320-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-20", "observacion": "vero", "estado": "Terminado", "archivoNombre": ""}, {"id": 60, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1335-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "sentencia incongruente", "estado": "En Proceso", "archivoNombre": ""}, {"id": 61, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "1347-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-05-22", "observacion": "enviado anteriormente", "estado": "Terminado", "archivoNombre": ""}, {"id": 62, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-06-15", "causa": "1355-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 63, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "1356-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-05-19", "observacion": "enviado anteriormente", "estado": "Terminado", "archivoNombre": ""}, {"id": 64, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "1363-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 65, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "1372-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 66, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "1379-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-19", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 67, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "1386-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-25", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 68, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "1405-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 69, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1413-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 70, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1444-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 71, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1457-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-22", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 72, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1458-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-22", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 73, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-06-15", "causa": "1507-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-25", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 74, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-06-15", "causa": "1554-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-25", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 75, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "1561-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-22", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 76, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "1580-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 77, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "357-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-16", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 78, "auditor": "realizado anteriormente", "fechaAsignacion": "2026-06-15", "causa": "425-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "2025-01-01", "observacion": "enviado anteriormente", "estado": "Terminado", "archivoNombre": ""}, {"id": 79, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-15", "causa": "499-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "sentencia ordena una nueva revisión de la cuenta, se solicita a administracion electoral documentacion para realizar los informes", "estado": "En Proceso", "archivoNombre": ""}, {"id": 80, "auditor": "kathy", "fechaAsignacion": "2026-06-15", "causa": "524-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 81, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "750-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-18", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 82, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-06-15", "causa": "797-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-25", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 83, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "804-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 84, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-06-15", "causa": "828-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 85, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-06-15", "causa": "857-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "2026-06-25", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 86, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "863-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 87, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-15", "causa": "900-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-22", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 88, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "966-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 89, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-15", "causa": "998-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-17", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 90, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-22", "causa": "1190-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-23", "observacion": "corrección", "estado": "Terminado", "archivoNombre": ""}, {"id": 91, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-23", "causa": "1135-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "2026-06-25", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 92, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-23", "causa": "989-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-06-25", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 93, "auditor": "Jose Celedon", "fechaAsignacion": "2026-02-04", "causa": "370-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-02-04", "observacion": "enviado antiguo", "estado": "Terminado", "archivoNombre": ""}, {"id": 94, "auditor": "Jose Celedon", "fechaAsignacion": "2026-02-04", "causa": "393-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-02-04", "observacion": "enviado antiguo", "estado": "Terminado", "archivoNombre": ""}, {"id": 95, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-26", "causa": "943-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-06-26", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 96, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-30", "causa": "1410-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-03", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 97, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-06-30", "causa": "1368-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-07-03", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 98, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-06-30", "causa": "420-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-07-03", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 99, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-06-30", "causa": "374-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-07-03", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 100, "auditor": "Jose Celedon", "fechaAsignacion": "2026-06-30", "causa": "1463-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-03", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 101, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "1613-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 102, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-03", "causa": "1479-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 103, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "1587-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 104, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "1583-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 105, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-03", "causa": "1542-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 106, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-03", "causa": "1557-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 107, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "1521-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 108, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-03", "causa": "1687-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 109, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-03", "causa": "1598-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 110, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "1559-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 111, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "355-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 112, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-03", "causa": "1680-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 113, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "1140-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 114, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-03", "causa": "1412-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 115, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-03", "causa": "1389-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 116, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-03", "causa": "1288-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 117, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-03", "causa": "1346-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 118, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-03", "causa": "1500-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 119, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-03", "causa": "1563-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 120, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-03", "causa": "1409-2025", "resultado": "Acoge Parcial", "modificaInforme": true, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "Terminado", "archivoNombre": ""}, {"id": 121, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-03", "causa": "1591-2025", "resultado": "Acoge", "modificaInforme": true, "modificaReembolso": true, "enviadoJefatura": true, "fechaEnviado": "2026-07-06", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 122, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-03", "causa": "431-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "NO Presentada", "estado": "Terminado", "archivoNombre": ""}, {"id": 123, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-03", "causa": "443-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "NO Presentada", "estado": "Terminado", "archivoNombre": ""}, {"id": 124, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-06", "causa": "1284-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "observacion": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 125, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "385-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 126, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "395-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 127, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "390-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 128, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "457-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 129, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "628-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 130, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "576-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 131, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "986-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 132, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "836-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 133, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "1017-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 134, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "958-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 135, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "962-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 136, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "924-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 137, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "859-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 138, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "1208-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 139, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "1093-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 140, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "960-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 141, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "1040-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 142, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "1162-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 143, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "1220-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 144, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "1354-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 145, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "1321-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 146, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "1429-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 147, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "1406-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 148, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "1480-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 149, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "1492-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 150, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "1477-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 151, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "1043-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 152, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "1424-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 153, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "1179-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 154, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "1274-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 155, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "1446-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 156, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "1490-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 157, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "1483-2025", "resultado": "Acoge Parcial", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 158, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "1495-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 159, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "1592-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "En Proceso", "archivoNombre": ""}, {"id": 160, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "1623-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 161, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "1494-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 162, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "1537-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "Asignado", "archivoNombre": ""}, {"id": 163, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "727-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": false, "fechaEnviado": "", "estado": "Asignado", "archivoNombre": ""}, {"id": 164, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "257-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 165, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "282-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 166, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "280-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 167, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "312-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 168, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "238-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 169, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "273-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 170, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "261-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 171, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "69-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 172, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "239-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 173, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "241-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 174, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "191-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 175, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "242-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 176, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "292-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 177, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "194-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 178, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "276-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 179, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "320-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 180, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "290-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 181, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "200-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 182, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "283-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 183, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "269-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 184, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "244-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 185, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "137-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 186, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "245-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 187, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "255-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 188, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "256-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 189, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "138-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 190, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "204-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 191, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "207-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 192, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "141-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 193, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "265-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 194, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "267-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 195, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "247-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 196, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "272-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 197, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "274-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 198, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "278-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 199, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "264-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 200, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "270-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 201, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "226-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 202, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "214-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 203, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "215-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 204, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "263-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 205, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "216-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 206, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "155-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 207, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "279-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 208, "auditor": "Veronica Palavecino", "fechaAsignacion": "2026-07-13", "causa": "170-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 209, "auditor": "Felipe Sarabia", "fechaAsignacion": "2026-07-13", "causa": "275-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 210, "auditor": "Julissa Lazo", "fechaAsignacion": "2026-07-13", "causa": "228-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 211, "auditor": "Camila Chaparro", "fechaAsignacion": "2026-07-13", "causa": "229-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 212, "auditor": "Jose Celedon", "fechaAsignacion": "2026-07-13", "causa": "266-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 213, "auditor": "Ximena Valdebenito", "fechaAsignacion": "2026-07-13", "causa": "230-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}, {"id": 214, "auditor": "Miguel Baeza", "fechaAsignacion": "2026-07-13", "causa": "231-2025", "resultado": "Acoge", "modificaInforme": false, "modificaReembolso": false, "enviadoJefatura": true, "fechaEnviado": "2026-07-13", "estado": "Terminado", "archivoNombre": ""}];
 
-  const zone = document.getElementById('uploadZone');
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    handleFiles(e.dataTransfer.files);
+/* ===================== Persistencia ===================== */
+const LS_KEY = 'tricel_records_v1';
+const DB_NAME = 'tricel_files_v1';
+let db = null;
+
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = ()=>{ req.result.createObjectStore('files'); };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
   });
+}
+async function saveFile(id, fileObj){
+  const tx = db.transaction('files','readwrite');
+  tx.objectStore('files').put(fileObj, String(id));
+  return new Promise((res,rej)=>{ tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); });
+}
+async function getFile(id){
+  return new Promise((res,rej)=>{
+    const tx = db.transaction('files','readonly');
+    const r = tx.objectStore('files').get(String(id));
+    r.onsuccess = ()=> res(r.result || null);
+    r.onerror = ()=> rej(r.error);
+  });
+}
+async function deleteFile(id){
+  const tx = db.transaction('files','readwrite');
+  tx.objectStore('files').delete(String(id));
+  return new Promise((res)=>{ tx.oncomplete=()=>res(); });
+}
 
-  function handleFiles(files) {
-    const tbody = document.getElementById('reportTable');
-    const extColors = { pdf: 'pdf', xlsx: 'xlsx', docx: 'docx', pptx: 'pptx' };
-    Array.from(files).forEach(file => {
-      const ext = file.name.split('.').pop().toLowerCase();
-      const size = file.size < 1024*1024
-        ? Math.round(file.size/1024) + ' KB'
-        : (file.size/(1024*1024)).toFixed(1) + ' MB';
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><div class="file-cell"><div class="file-icon ${extColors[ext]||'pdf'}">${ext.toUpperCase()}</div><div><div class="file-name">${file.name}</div><div class="file-meta">Sin asignar</div></div></div></td>
-        <td class="td-muted">${ext.toUpperCase()}</td>
-        <td><span class="status-pill pendiente">Pendiente</span></td>
-        <td class="td-muted">—</td>
-        <td class="td-muted">Hoy</td>
-        <td class="td-muted">${size}</td>
-        <td><div class="actions-cell"><button class="action-btn"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
-      `;
-      tbody.prepend(row);
-    });
-  }
+function loadRecords(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){ console.error('Error leyendo almacenamiento local', e); }
+  return JSON.parse(JSON.stringify(SEED));
+}
+function persist(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(records)); }
+  catch(e){ console.error('No se pudo guardar', e); alert('No se pudo guardar en el navegador (almacenamiento lleno o bloqueado).'); }
+}
 
-  function filterTable() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const status = document.getElementById('statusFilter').value.toLowerCase();
-    const type = document.getElementById('typeFilter').value.toLowerCase();
-    document.querySelectorAll('#reportTable tr').forEach(row => {
-      const name = row.cells[0]?.innerText.toLowerCase() || '';
-      const rowType = row.cells[1]?.innerText.toLowerCase() || '';
-      const rowStatus = row.cells[2]?.innerText.toLowerCase() || '';
-      const matchQ = !q || name.includes(q);
-      const matchS = !status || rowStatus.includes(status);
-      const matchT = !type || rowType.includes(type);
-      row.style.display = (matchQ && matchS && matchT) ? '' : 'none';
-    });
+let records = loadRecords();
+let currentView = 'kanban';
+let editingId = null;
+let pendingFile = null;   // {name, type, data} para el registro en edición
+let pendingFileRemoved = false;
+
+/* ===================== Utilidades ===================== */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const fmtDate = d => d ? new Date(d+'T00:00:00').toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+const nextId = () => records.reduce((m,r)=>Math.max(m,r.id),0)+1;
+
+function resultadoClass(r){ return r==='Acoge Parcial' ? 'AcogeParcial' : (r||'Pendiente').replace(' ','');}
+function estadoClass(e){ return (e||'Asignado').replace(' ',''); }
+
+/* ===================== Filtros ===================== */
+function getFilters(){
+  return {
+    q: $('#fSearch').value.trim().toLowerCase(),
+    auditor: $('#fAuditor').value,
+    estado: $('#fEstado').value,
+  };
+}
+function applyFilters(list){
+  const f = getFilters();
+  return list.filter(r=>{
+    if(f.auditor && r.auditor !== f.auditor) return false;
+    if(f.estado && r.estado !== f.estado) return false;
+    if(f.q){
+      const hay = [r.causa,r.auditor].join(' ').toLowerCase();
+      if(!hay.includes(f.q)) return false;
+    }
+    return true;
+  });
+}
+
+// Clave de cada usuario: inicial del nombre + apellido completo (ej. Jorge Laciart -> JLaciart).
+// Las claves se guardan como hash SHA-256, nunca en texto plano.
+const USERS = [
+  {name:'Jorge Laciart',       role:'jefatura', hash:'974c6e2adb2a4ddfd564ce289335915393fc5ead80bd221e1e0c01f544436277'},
+  {name:'Felipe Sarabia',      role:'auditor',  hash:'17cd45306a58c89259e4e2b63bb754e235dffda65b56f8b42127ff409442b0cd'},
+  {name:'Julissa Lazo',        role:'auditor',  hash:'cd5af548eb0b80406d9aa597e80597a7e08ceacd72c79e3a462c96b55ebc4e9e'},
+  {name:'Camila Chaparro',     role:'auditor',  hash:'f7e67512f4647ec09a4daf3ddfcdcaf4b3d966b837600fff611caf63ed867954'},
+  {name:'Jose Celedon',        role:'auditor',  hash:'b99b36a15e53b78116abaae5f2a3777cf0700a171934a805654cd752d092077a'},
+  {name:'Ximena Valdebenito',  role:'auditor',  hash:'39ee2ea773ac829288a5e77d171c1b9cd1cd385571df5977b4a5ec9e44d85ea6'},
+  {name:'Miguel Baeza',        role:'auditor',  hash:'8e8f1bdfb433ecaa46c9234321f8c0feec92bd8f4510b8cbe529c6c5976d0489'},
+  {name:'Veronica Palavecino', role:'auditor',  hash:'fc83f3de9bedb8b570cff722201d54e9476a9c534eb29fafba65d37afc489a50'},
+];
+const AUDITORES_EQUIPO = USERS.filter(u=>u.role==='auditor').map(u=>u.name);
+
+async function sha256Hex(text){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+/* ===================== Sesión de usuario ===================== */
+// OJO: al ser una app 100% del navegador, aunque las claves se guardan
+// hasheadas (SHA-256), el código sigue siendo visible; no es una barrera
+// de seguridad real ante alguien con conocimientos técnicos.
+const USER_KEY = 'tricel_user_v1';
+
+function loadUser(){
+  try{ const raw = localStorage.getItem(USER_KEY); if(raw) return JSON.parse(raw); }
+  catch(e){ console.error('Error leyendo sesión', e); }
+  return null;
+}
+function saveUser(u){
+  try{ localStorage.setItem(USER_KEY, JSON.stringify(u)); }
+  catch(e){ console.error('No se pudo guardar la sesión', e); }
+}
+
+let currentUser = loadUser();
+
+function canSeeRecord(r){
+  if(r.estado !== 'Revision Jefatura') return true;
+  if(!currentUser) return false;
+  if(currentUser.role === 'jefatura') return true;
+  return currentUser.role === 'auditor' && currentUser.name === r.auditor;
+}
+function visibleRecords(){ return records.filter(canSeeRecord); }
+
+function canEditRecord(r){
+  if(!currentUser) return false;
+  if(currentUser.role === 'jefatura') return true;
+  return currentUser.role === 'auditor' && currentUser.name === r.auditor;
+}
+
+function updateUserbar(){
+  $('#userbarLabel').textContent = currentUser
+    ? `Sesión: ${currentUser.name}${currentUser.role==='jefatura' ? ' (Jefatura)' : ''}`
+    : 'Sin identificar';
+}
+function populateLoginOptions(){
+  const sel = $('#loginUser');
+  const users = USERS.slice().sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Selecciona —</option>'
+    + users.map(u=>`<option value="${esc(u.name)}">${esc(u.name)}${u.role==='jefatura' ? ' (Jefatura)' : ''}</option>`).join('');
+  sel.value = cur;
+}
+function openLogin(){
+  populateLoginOptions();
+  $('#loginUser').value = currentUser ? currentUser.name : '';
+  $('#loginPassField').style.display = 'flex';
+  $('#loginPass').value = '';
+  $('#loginError').style.display = 'none';
+  $('#loginOverlay').classList.add('show');
+}
+function closeLogin(){ $('#loginOverlay').classList.remove('show'); }
+
+$('#loginUser').addEventListener('change', ()=>{
+  $('#loginError').style.display = 'none';
+});
+$('#btnLogin').addEventListener('click', async ()=>{
+  const v = $('#loginUser').value;
+  if(!v){ alert('Selecciona un usuario.'); return; }
+  const user = USERS.find(u=>u.name===v);
+  if(!user){ alert('Usuario no válido.'); return; }
+  const enteredHash = await sha256Hex($('#loginPass').value);
+  if(enteredHash !== user.hash){ $('#loginError').style.display = 'block'; return; }
+  currentUser = {role:user.role, name:user.name};
+  saveUser(currentUser);
+  closeLogin();
+  updateUserbar();
+  renderAll();
+});
+$('#btnSwitchUser').addEventListener('click', openLogin);
+$('#loginOverlay').addEventListener('click', e=>{ if(e.target.id==='loginOverlay' && currentUser) closeLogin(); });
+
+function refreshFilterOptions(){
+  const auditores = AUDITORES_EQUIPO.slice().sort((a,b)=>a.localeCompare(b,'es'));
+  const selA = $('#fAuditor'), dl = $('#auditorList');
+  const curA = selA.value;
+  selA.innerHTML = '<option value="">Todos los auditores</option>' + auditores.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('');
+  dl.innerHTML = auditores.map(a=>`<option value="${esc(a)}">`).join('');
+  selA.value = curA;
+}
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ===================== Contador del header ===================== */
+function renderStats(){
+  $('#statTotal').textContent = visibleRecords().length;
+}
+
+/* ===================== Render Dashboard ===================== */
+const ESTADO_COLOR = {'Asignado':'#152238','En Proceso':'#8A6A1E','Revision Jefatura':'#9C7A3F','Terminado':'#3F6C51'};
+function renderDashboard(){
+  const vis = visibleRecords();
+  const total = vis.length;
+  const order = ['Asignado','En Proceso','Revision Jefatura','Terminado'];
+  const label = {'Asignado':'Asignado','En Proceso':'En proceso','Revision Jefatura':'Revisión jefatura','Terminado':'Terminado'};
+  const data = order.map(e=>({estado:e, label:label[e], color:ESTADO_COLOR[e], count:vis.filter(r=>r.estado===e).length}));
+  const activeEstado = $('#fEstado').value;
+
+  const cx=80, cy=80, r=60, sw=24, circ=2*Math.PI*r;
+  let acc = 0, segs;
+  if(total===0){
+    segs = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E2E4E9" stroke-width="${sw}"/>`;
+  } else {
+    segs = data.filter(d=>d.count>0).map(d=>{
+      const len = (d.count/total)*circ;
+      const dashoffset = -acc;
+      acc += len;
+      const dim = activeEstado && activeEstado!==d.estado ? 0.3 : 1;
+      return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.color}" stroke-width="${sw}" stroke-dasharray="${len} ${circ-len}" stroke-dashoffset="${dashoffset}" opacity="${dim}" style="transition:opacity .15s ease;"/>`;
+    }).join('');
   }
+  $('#dashDonut').innerHTML = `<g transform="rotate(-90 ${cx} ${cy})">${segs}</g>`;
+  $('#dashCenter').innerHTML = `<div class="num">${total}</div><div class="lbl">Expedientes</div>`;
+
+  $('#dashLegend').innerHTML = data.map(d=>{
+    const pct = total ? Math.round((d.count/total)*100) : 0;
+    const dimmed = activeEstado && activeEstado!==d.estado ? 'dimmed' : '';
+    return `<div class="dash-item ${dimmed}" data-estado="${d.estado}">
+      <span class="dash-dot" style="background:${d.color};"></span>
+      <span class="txt"><span class="name">${d.label}</span><span class="cnt">${d.count} expediente${d.count===1?'':'s'} · ${pct}%</span></span>
+    </div>`;
+  }).join('');
+  $$('#dashLegend .dash-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const est = item.dataset.estado;
+      $('#fEstado').value = ($('#fEstado').value === est) ? '' : est;
+      renderAll();
+    });
+  });
+}
+
+/* ===================== Render Kanban ===================== */
+const ESTADOS = ['Asignado','En Proceso','Revision Jefatura','Terminado'];
+const ESTADO_LABEL = {'Asignado':'Asignado','En Proceso':'En proceso','Revision Jefatura':'Revisión jefatura','Terminado':'Terminado'};
+function renderBoard(){
+  const board = $('#board');
+  const filtered = applyFilters(visibleRecords());
+  board.innerHTML = ESTADOS.map(estado=>{
+    const items = filtered.filter(r=>r.estado===estado);
+    const cards = items.map(r=>cardHtml(r)).join('') || '<div class="empty-col">Sin expedientes</div>';
+    return `
+    <div class="col" data-estado="${estado}">
+      <div class="col-head">${ESTADO_LABEL[estado]}<span class="count">${items.length}</span></div>
+      <div class="col-body" data-estado="${estado}">${cards}</div>
+    </div>`;
+  }).join('');
+
+  $$('.card').forEach(c=>{
+    const rec = records.find(r=>r.id===Number(c.dataset.id));
+    const editable = rec && canEditRecord(rec);
+    if(editable){
+      c.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', c.dataset.id); });
+      c.addEventListener('click', ()=> openModal(Number(c.dataset.id)));
+    } else {
+      c.setAttribute('draggable','false');
+      c.classList.add('readonly');
+      c.addEventListener('click', ()=> alert('Este expediente está asignado a otro auditor; no puedes modificarlo.'));
+    }
+  });
+  $$('.col-body').forEach(col=>{
+    col.addEventListener('dragover', e=>{ e.preventDefault(); col.classList.add('dragover'); });
+    col.addEventListener('dragleave', ()=> col.classList.remove('dragover'));
+    col.addEventListener('drop', e=>{
+      e.preventDefault(); col.classList.remove('dragover');
+      const id = Number(e.dataTransfer.getData('text/plain'));
+      const rec = records.find(r=>r.id===id);
+      if(rec && canEditRecord(rec)){ rec.estado = col.dataset.estado; persist(); renderAll(); }
+    });
+  });
+}
+function cardHtml(r){
+  const editable = canEditRecord(r);
+  const cls = editable ? 'card' : 'card readonly';
+  const drag = editable ? 'true' : 'false';
+  if(r.estado === 'Asignado'){
+    return `<div class="${cls}" draggable="${drag}" data-id="${r.id}">
+      <div class="causa">Causa ${esc(r.causa||'—')}</div>
+      <div class="meta"><span>👤 ${esc(r.auditor||'Sin asignar')}</span></div>
+    </div>`;
+  }
+  if(r.estado === 'Terminado'){
+    return `<div class="${cls}" draggable="${drag}" data-id="${r.id}">
+      <div class="causa">Causa ${esc(r.causa||'—')}</div>
+    </div>`;
+  }
+  return `<div class="${cls}" draggable="${drag}" data-id="${r.id}">
+    <div class="stamp ${resultadoClass(r.resultado)}">${esc(r.resultado||'Pendiente')}</div>
+    <div class="causa">Causa ${esc(r.causa||'—')}</div>
+    <div class="meta">
+      <span>👤 ${esc(r.auditor||'Sin asignar')}</span>
+      <span>📅 ${fmtDate(r.fechaAsignacion)}</span>
+    </div>
+    ${r.archivoNombre ? `<div class="file-chip">📎 ${esc(r.archivoNombre)}</div>` : ''}
+  </div>`;
+}
+
+/* ===================== Render Tabla ===================== */
+let sortKey = 'causa', sortDir = 1;
+function renderTable(){
+  const filtered = applyFilters(visibleRecords()).slice().sort((a,b)=>{
+    const va = (a[sortKey]||'').toString(), vb = (b[sortKey]||'').toString();
+    return va.localeCompare(vb, 'es', {numeric:true}) * sortDir;
+  });
+  $('#tbody').innerHTML = filtered.map(r=>`
+    <tr>
+      <td class="mono">${esc(r.causa||'—')}</td>
+      <td>${esc(r.auditor||'—')}</td>
+      <td>${fmtDate(r.fechaAsignacion)}</td>
+      <td><span class="badge ${estadoClass(r.estado)}">${ESTADO_LABEL[r.estado]||r.estado}</span></td>
+      <td><span class="stamp ${resultadoClass(r.resultado)}" style="position:static;">${esc(r.resultado||'Pendiente')}</span></td>
+      <td>${r.archivoNombre ? `<button class="rowbtn" data-dl="${r.id}">📎 Descargar</button>` : '—'}</td>
+      <td>${canEditRecord(r) ? `<button class="rowbtn" data-edit="${r.id}">Editar</button>` : `<span class="rowbtn-disabled" title="Asignado a otro auditor">Editar</span>`}</td>
+    </tr>
+  `).join('');
+  $('#noResults').style.display = filtered.length ? 'none' : 'block';
+  $$('[data-edit]').forEach(b=> b.addEventListener('click', ()=> openModal(Number(b.dataset.edit))));
+  $$('[data-dl]').forEach(b=> b.addEventListener('click', ()=> downloadFile(Number(b.dataset.dl))));
+}
+
+async function downloadFile(id){
+  const f = await getFile(id);
+  if(!f){ alert('No se encontró el archivo guardado localmente para este expediente.'); return; }
+  const blob = new Blob([f.data], {type:f.type||'application/octet-stream'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = f.name || 'informe';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+}
+
+/* ===================== Render orquestador ===================== */
+function renderAll(){
+  refreshFilterOptions();
+  renderStats();
+  renderDashboard();
+  if(currentView==='kanban') renderBoard(); else renderTable();
+}
+
+/* ===================== Modal ===================== */
+function openModal(id){
+  const recCheck = id ? records.find(r=>r.id===id) : null;
+  if(recCheck && !canEditRecord(recCheck)){
+    alert('Este expediente está asignado a otro auditor; no puedes modificarlo.');
+    return;
+  }
+  editingId = id;
+  pendingFile = null; pendingFileRemoved = false;
+  const rec = id ? records.find(r=>r.id===id) : null;
+  $('#modalTitle').textContent = rec ? `Expediente · Causa ${rec.causa||''}` : 'Nuevo expediente';
+  $('#fldCausa').value = rec?.causa || '';
+  $('#fldAuditor').value = rec?.auditor || '';
+  $('#fldFecha').value = rec?.fechaAsignacion || new Date().toISOString().slice(0,10);
+  $('#fldModInforme').checked = !!rec?.modificaInforme;
+  $('#fldModReembolso').checked = !!rec?.modificaReembolso;
+  $('#fldEnviado').checked = !!rec?.enviadoJefatura;
+  $('#fldFechaEnviado').value = rec?.fechaEnviado || '';
+  $('#fldArchivo').value = '';
+  $('#curArchivo').textContent = rec?.archivoNombre ? `Actual: ${rec.archivoNombre}` : 'Sin archivo cargado';
+  $('#btnQuitarArchivo').style.display = rec?.archivoNombre ? 'inline-block' : 'none';
+  $('#btnDelete').style.display = rec ? 'inline-block' : 'none';
+  $('#overlay').classList.add('show');
+}
+function closeModal(){ $('#overlay').classList.remove('show'); editingId=null; }
+
+$('#fldArchivo').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 20*1024*1024){ alert('El archivo supera 20MB; elige uno más liviano para el almacenamiento local.'); e.target.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = ()=>{ pendingFile = {name:file.name, type:file.type, data: reader.result}; pendingFileRemoved=false; $('#curArchivo').textContent = `Nuevo: ${file.name}`; };
+  reader.readAsArrayBuffer(file);
+});
+$('#btnQuitarArchivo').addEventListener('click', ()=>{
+  pendingFileRemoved = true; pendingFile = null;
+  $('#curArchivo').textContent = 'Se eliminará al guardar';
+  $('#fldArchivo').value='';
+});
+
+async function saveModal(){
+  const causa = $('#fldCausa').value.trim();
+  if(!causa){ alert('Ingresa el N° de causa.'); return; }
+  let rec = editingId ? records.find(r=>r.id===editingId) : null;
+  if(rec && !canEditRecord(rec)){ alert('No tienes permiso para modificar este expediente.'); closeModal(); return; }
+  const isNew = !rec;
+  if(isNew){ rec = { id: nextId(), estado: 'Asignado', resultado: 'Pendiente' }; }
+  Object.assign(rec, {
+    causa,
+    auditor: $('#fldAuditor').value.trim(),
+    fechaAsignacion: $('#fldFecha').value,
+    modificaInforme: $('#fldModInforme').checked,
+    modificaReembolso: $('#fldModReembolso').checked,
+    enviadoJefatura: $('#fldEnviado').checked,
+    fechaEnviado: $('#fldFechaEnviado').value,
+  });
+  if(rec.enviadoJefatura && rec.estado !== 'Terminado'){
+    rec.estado = 'Revision Jefatura';
+  }
+  if(isNew) records.push(rec);
+
+  if(pendingFile){
+    await saveFile(rec.id, pendingFile);
+    rec.archivoNombre = pendingFile.name;
+  } else if(pendingFileRemoved){
+    await deleteFile(rec.id);
+    rec.archivoNombre = '';
+  }
+  persist();
+  closeModal();
+  renderAll();
+}
+
+async function deleteRecord(){
+  if(!editingId) return;
+  const rec = records.find(r=>r.id===editingId);
+  if(rec && !canEditRecord(rec)){ alert('No tienes permiso para eliminar este expediente.'); closeModal(); return; }
+  if(!confirm('¿Eliminar este expediente? Esta acción no se puede deshacer.')) return;
+  records = records.filter(r=>r.id!==editingId);
+  await deleteFile(editingId);
+  persist();
+  closeModal();
+  renderAll();
+}
+
+/* ===================== Export CSV ===================== */
+function exportCsv(){
+  const cols = ['causa','auditor','fechaAsignacion','estado','resultado','modificaInforme','modificaReembolso','enviadoJefatura','fechaEnviado','archivoNombre'];
+  const header = ['Causa','Auditor','Fecha asignación','Estado','Resultado','Modifica informe','Modifica reembolso','Enviado a jefatura','Fecha enviado','Archivo'];
+  const rows = applyFilters(visibleRecords()).map(r=> cols.map(c=>{
+    let v = r[c];
+    if(typeof v === 'boolean') v = v ? 'Sí' : 'No';
+    v = (v ?? '').toString().replace(/"/g,'""');
+    return `"${v}"`;
+  }).join(','));
+  const csv = [header.join(','), ...rows].join('\n');
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='control_informes_uce.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+}
+
+/* ===================== Eventos globales ===================== */
+$('#btnNew').addEventListener('click', ()=> openModal(null));
+$('#modalClose').addEventListener('click', closeModal);
+$('#btnCancel').addEventListener('click', closeModal);
+$('#btnSave').addEventListener('click', saveModal);
+$('#btnDelete').addEventListener('click', deleteRecord);
+$('#overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+$('#btnExport').addEventListener('click', exportCsv);
+
+$('#btnKanban').addEventListener('click', ()=>{
+  currentView='kanban'; $('#btnKanban').classList.add('active'); $('#btnTabla').classList.remove('active');
+  $('#kanbanView').style.display='block'; $('#tablaView').style.display='none'; renderAll();
+});
+$('#btnTabla').addEventListener('click', ()=>{
+  currentView='tabla'; $('#btnTabla').classList.add('active'); $('#btnKanban').classList.remove('active');
+  $('#kanbanView').style.display='none'; $('#tablaView').style.display='block'; renderAll();
+});
+
+['#fSearch','#fAuditor','#fEstado'].forEach(sel=>{
+  $(sel).addEventListener('input', renderAll);
+  $(sel).addEventListener('change', renderAll);
+});
+
+$$('thead th[data-k]').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const k = th.dataset.k;
+    if(sortKey===k) sortDir *= -1; else { sortKey=k; sortDir=1; }
+    renderTable();
+  });
+});
+
+/* ===================== Init ===================== */
+(async function init(){
+  try{ db = await openDB(); }
+  catch(e){ console.error('IndexedDB no disponible', e); }
+  updateUserbar();
+  if(!currentUser) openLogin();
+  renderAll();
+})();
 </script>
 </body>
 </html>
